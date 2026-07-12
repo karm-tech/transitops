@@ -1,0 +1,30 @@
+#!/bin/sh
+# Auto-update the README "Project Status" block on every commit.
+# Every push therefore carries an up-to-date README (timestamp, commit count,
+# recent activity). Only the block between STATUS markers is touched.
+
+README="README.md"
+[ -f "$README" ] || exit 0
+grep -q "<!-- STATUS:START -->" "$README" || exit 0
+
+DATE=$(date "+%Y-%m-%d %H:%M")
+COUNT=$(git rev-list --count HEAD 2>/dev/null || echo 0)
+COUNT=$((COUNT + 1))                       # include the commit being created
+LOG=$(git log -8 --pretty=format:"- %s" 2>/dev/null)
+[ -z "$LOG" ] && LOG="- _first commit_"
+
+BLOCK="<!-- STATUS:START -->
+> **Last updated:** $DATE  •  **Commits:** $COUNT
+
+**Recent activity**
+$LOG
+<!-- STATUS:END -->"
+
+awk -v block="$BLOCK" '
+  /<!-- STATUS:START -->/ { print block; skip=1; next }
+  /<!-- STATUS:END -->/   { skip=0; next }
+  skip!=1                 { print }
+' "$README" > "$README.tmp" && mv "$README.tmp" "$README"
+
+git add "$README"
+exit 0

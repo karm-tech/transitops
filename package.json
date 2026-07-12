@@ -1,0 +1,38 @@
+{
+  "name": "transitops",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Smart Transport Operations Platform",
+  "scripts": {
+    "dev": "concurrently -n api,web -c yellow,cyan \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:web": "vite",
+    "dev:api": "npm --prefix server run dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "seed": "npm --prefix server run seed",
+    "setup:server": "npm --prefix server install"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.59.0",
+    "axios": "^1.7.7",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.451.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
+    "react-router-dom": "^6.26.2",
+    "recharts": "^2.12.7",
+    "socket.io-client": "^4.8.0",
+    "tailwind-merge": "^2.5.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.0.1",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "vite": "^5.4.8"
+  }
+}
