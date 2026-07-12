@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from '@/components/layout/AppShell'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
+import LandingPage from '@/features/marketing/LandingPage'
 import LoginPage from '@/features/auth/LoginPage'
 import SignupPage from '@/features/auth/SignupPage'
 import DashboardPage from '@/features/dashboard/DashboardPage'
@@ -23,6 +24,7 @@ import ProfilePage from '@/features/profile/ProfilePage'
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
 
@@ -33,7 +35,6 @@ export default function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/fleet" element={<VehiclesPage />} />
         <Route path="/fleet/new" element={<VehicleFormPage />} />

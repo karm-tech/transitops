@@ -142,6 +142,17 @@ async function main() {
     ],
   })
 
+  // Sent-mail outbox: welcome emails on registration and licence-expiry reminders.
+  await prisma.mailLog.createMany({
+    data: [
+      { ...demo, to: 'manager@transitops.app', subject: 'Welcome to TransitOps', body: 'Hi Karm, your TransitOps account is ready. You now have Fleet Manager access to vehicles, drivers and dispatch.', type: 'welcome', createdAt: daysFromNow(-9) },
+      { ...demo, to: 'dispatcher@transitops.app', subject: 'Welcome to TransitOps', body: 'Hi Ravi, welcome aboard! You can start planning and dispatching trips from the Trips workspace.', type: 'welcome', createdAt: daysFromNow(-7) },
+      { ...demo, to: 'safety@transitops.app', subject: 'Licence reminder: Meena', body: "Meena's licence DL-3391 expires soon (20 days). Please arrange a renewal before the next assignment.", type: 'license', createdAt: daysFromNow(-3) },
+      { ...demo, to: 'safety@transitops.app', subject: 'Licence reminder: John', body: "John's licence DL-4420 has expired. This driver is blocked from dispatch until the licence is renewed.", type: 'license', createdAt: daysFromNow(-1) },
+      { ...demo, to: 'finance@transitops.app', subject: 'Welcome to TransitOps', body: 'Hi Neha, your Financial Analyst account is active. Cost, fuel and ROI reports are available under Reports.', type: 'welcome', createdAt: daysFromNow(-1) },
+    ],
+  })
+
   console.log('Seed complete: demo data (isDemo=true). Demo buttons see it; credential login starts empty.')
 }
 

@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Loader2, Save } from 'lucide-react'
+import { Loader2, Save, Plus, FileText, X } from 'lucide-react'
 import Modal from '@/components/ui/Modal'
-import { apiError } from '@/lib/api'
-import { DRIVER_STATUS, LICENSE_CATEGORIES, labelFor } from '@/lib/constants'
+import { api, apiError } from '@/lib/api'
+import { DRIVER_STATUS, DRIVER_DOC_TYPES, LICENSE_CATEGORIES, labelFor } from '@/lib/constants'
 import { useSaveDriver } from './api'
 
 const empty = { name: '', licenseNumber: '', licenseCategory: 'LMV', licenseExpiry: '', contact: '', safetyScore: 100, status: 'Available' }
@@ -19,16 +19,34 @@ export default function DriverFormModal({ open, onClose, driver }) {
   const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm({ defaultValues: empty })
   const save = useSaveDriver()
   const [error, setError] = useState('')
+  const [staged, setStaged] = useState([])
+  const [stageType, setStageType] = useState('Licence')
+  const fileRef = useRef(null)
 
   useEffect(() => {
     reset(driver ? { ...driver, contact: driver.contact || '', licenseExpiry: toDateInput(driver.licenseExpiry) } : empty)
+    setStaged([])
     setError('')
   }, [driver, open, reset])
+
+  const addStaged = () => {
+    const file = fileRef.current?.files?.[0]
+    if (!file) return
+    setStaged((s) => [...s, { file, docType: stageType }])
+    fileRef.current.value = ''
+  }
 
   const onSubmit = async (values) => {
     setError('')
     try {
-      await save.mutateAsync(driver ? { id: driver.id, ...values } : values)
+      const saved = await save.mutateAsync(driver ? { id: driver.id, ...values } : values)
+      for (const doc of staged) {
+        const form = new FormData()
+        form.append('file', doc.file)
+        form.append('driverId', saved.id)
+        form.append('docType', doc.docType)
+        await api.post('/documents', form)
+      }
       onClose()
     } catch (err) {
       setError(apiError(err, 'Could not save driver'))
@@ -101,6 +119,32 @@ export default function DriverFormModal({ open, onClose, driver }) {
           </select>
         </label>
       </form>
+
+      {!driver && (
+        <div className="mt-5 border-t pt-4" style={{ borderColor: 'rgb(var(--border))' }}>
+          <p className="mb-1 text-sm font-medium">Documents (optional)</p>
+          <p className="mb-3 text-xs text-muted">Attach the licence — it uploads when you add the driver.</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <select className="input w-auto" value={stageType} onChange={(e) => setStageType(e.target.value)}>
+              {DRIVER_DOC_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <input ref={fileRef} type="file" className="text-sm" />
+            <button type="button" className="btn-ghost" onClick={addStaged}><Plus size={15} /> Add</button>
+          </div>
+          {staged.length > 0 && (
+            <ul className="mt-3 divide-y" style={{ borderColor: 'rgb(var(--border))' }}>
+              {staged.map((d, i) => (
+                <li key={i} className="flex items-center gap-3 py-2 text-sm">
+                  <FileText size={15} className="text-brand-500" />
+                  <span className="w-20 shrink-0 font-medium">{d.docType}</span>
+                  <span className="flex-1 truncate text-muted">{d.file.name}</span>
+                  <button type="button" className="btn-ghost px-2 text-rose-600" onClick={() => setStaged(staged.filter((_, j) => j !== i))}><X size={14} /></button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </Modal>
   )
 }

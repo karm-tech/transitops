@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { Upload, FileText, Trash2, Download, Loader2 } from 'lucide-react'
+import { Upload, FileText, Trash2, Download, Eye, Loader2 } from 'lucide-react'
 import { api, apiError } from '@/lib/api'
 
 // Manages document upload / list / delete for either a vehicle or a driver.
@@ -33,9 +33,10 @@ export default function DocumentManager({ kind, ownerId, documents = [], docType
     }
   }
 
-  const onDelete = async (id) => {
+  const onDelete = async (doc) => {
+    if (!window.confirm(`Delete "${doc.fileName}"? This cannot be undone.`)) return
     try {
-      await api.delete(kind === 'driver' ? `/documents/driver/${id}` : `/documents/${id}`)
+      await api.delete(kind === 'driver' ? `/documents/driver/${doc.id}` : `/documents/${doc.id}`)
       refresh()
     } catch (err) {
       setError(apiError(err, 'Could not delete'))
@@ -65,8 +66,9 @@ export default function DocumentManager({ kind, ownerId, documents = [], docType
               <FileText size={16} className="text-brand-500" />
               <span className="w-24 shrink-0 font-medium">{d.docType}</span>
               <span className="flex-1 truncate text-muted">{d.fileName}</span>
-              <a href={d.filePath} target="_blank" rel="noreferrer" className="btn-ghost px-2"><Download size={14} /></a>
-              {canManage && <button type="button" className="btn-ghost px-2 text-rose-600" onClick={() => onDelete(d.id)}><Trash2 size={14} /></button>}
+              <a href={d.filePath} target="_blank" rel="noreferrer" className="btn-ghost px-2" title="View in new tab"><Eye size={14} /></a>
+              <a href={d.filePath} download={d.fileName} className="btn-ghost px-2" title="Download"><Download size={14} /></a>
+              {canManage && <button type="button" className="btn-ghost px-2 text-rose-600" onClick={() => onDelete(d)} title="Delete"><Trash2 size={14} /></button>}
             </li>
           ))}
         </ul>
