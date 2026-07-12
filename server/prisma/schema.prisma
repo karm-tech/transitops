@@ -13,6 +13,9 @@ datasource db {
 model User {
   id            String   @id @default(cuid())
   name          String
+  firstName     String?
+  lastName      String?
+  phone         String?
   email         String   @unique
   passwordHash  String
   role          String
@@ -30,6 +33,17 @@ model Notification {
   createdAt DateTime @default(now())
 }
 
+model MailLog {
+  id        String   @id @default(cuid())
+  to        String
+  subject   String
+  body      String
+  type      String
+  status    String   @default("sent")
+  isDemo    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
 model Vehicle {
   id              String            @id @default(cuid())
   regNumber       String
@@ -39,6 +53,7 @@ model Vehicle {
   odometer        Int               @default(0)
   acquisitionCost Float             @default(0)
   region          String?
+  description     String?
   status          String            @default("Available")
   isDemo          Boolean           @default(false)
   createdAt       DateTime          @default(now())
@@ -52,19 +67,31 @@ model Vehicle {
 }
 
 model Driver {
-  id              String   @id @default(cuid())
+  id              String           @id @default(cuid())
   name            String
   licenseNumber   String
   licenseCategory String
   licenseExpiry   DateTime
   contact         String?
-  safetyScore     Int      @default(100)
-  status          String   @default("Available")
-  isDemo          Boolean  @default(false)
-  createdAt       DateTime @default(now())
+  safetyScore     Int              @default(100)
+  status          String           @default("Available")
+  isDemo          Boolean          @default(false)
+  createdAt       DateTime         @default(now())
   trips           Trip[]
+  documents       DriverDocument[]
 
   @@unique([licenseNumber, isDemo])
+}
+
+model DriverDocument {
+  id         String   @id @default(cuid())
+  docType    String
+  fileName   String
+  filePath   String
+  isDemo     Boolean  @default(false)
+  uploadedAt DateTime @default(now())
+  driverId   String
+  driver     Driver   @relation(fields: [driverId], references: [id])
 }
 
 model Trip {

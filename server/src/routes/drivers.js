@@ -47,7 +47,10 @@ router.get('/:id', async (req, res, next) => {
   try {
     const driver = await prisma.driver.findFirst({
       where: { id: req.params.id, isDemo: req.isDemo },
-      include: { trips: { orderBy: { createdAt: 'desc' }, take: 10, include: { vehicle: true } } },
+      include: {
+        trips: { orderBy: { createdAt: 'desc' }, take: 10, include: { vehicle: true } },
+        documents: { orderBy: { uploadedAt: 'desc' } },
+      },
     })
     if (!driver) throw notFound('Driver not found')
     res.json(driver)

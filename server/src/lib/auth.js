@@ -15,6 +15,9 @@ export const verifyToken = (token) => jwt.verify(token, SECRET)
 export const publicUser = (user) => ({
   id: user.id,
   name: user.name,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  phone: user.phone,
   email: user.email,
   role: user.role,
   status: user.status,

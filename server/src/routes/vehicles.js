@@ -17,6 +17,7 @@ const vehicleSchema = z.object({
   odometer: z.coerce.number({ invalid_type_error: 'must be a number' }).int('must be a whole number').nonnegative('cannot be negative').default(0),
   acquisitionCost: z.coerce.number({ invalid_type_error: 'must be a number' }).nonnegative('cannot be negative').default(0),
   region: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
   status: z.enum(VEHICLE_STATUS).default('Available'),
 })
 

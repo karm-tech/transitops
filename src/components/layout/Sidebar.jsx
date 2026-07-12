@@ -2,11 +2,11 @@ import { NavLink } from 'react-router-dom'
 import { Truck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/app/auth'
-import { navItems } from './navItems'
+import { visibleNav } from './navItems'
 
 export default function Sidebar() {
   const { user } = useAuth()
-  const items = navItems.filter((item) => !item.adminOnly || user?.role === 'Admin')
+  const items = visibleNav(user?.role)
 
   return (
     <aside className="surface hidden w-60 shrink-0 flex-col border-r md:flex">

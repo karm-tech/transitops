@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.post('/read-all', async (_req, res, next) => {
+router.post('/read-all', async (req, res, next) => {
   try {
     await prisma.notification.updateMany({ where: { isDemo: req.isDemo, read: false }, data: { read: true } })
     res.json({ ok: true })
@@ -30,7 +30,7 @@ router.post('/read-all', async (_req, res, next) => {
 })
 
 // License-expiry reminders: notify + email drivers with expired / soon-to-expire licences (B5).
-router.post('/license-check', requireRole(ROLES.FLEET_MANAGER, ROLES.SAFETY_OFFICER), async (_req, res, next) => {
+router.post('/license-check', requireRole(ROLES.FLEET_MANAGER, ROLES.SAFETY_OFFICER), async (req, res, next) => {
   try {
     const soon = new Date(Date.now() + 30 * 86400000)
     const drivers = await prisma.driver.findMany({ where: { isDemo: req.isDemo, licenseExpiry: { lte: soon } } })
@@ -39,7 +39,7 @@ router.post('/license-check', requireRole(ROLES.FLEET_MANAGER, ROLES.SAFETY_OFFI
       const expired = new Date(d.licenseExpiry) < new Date()
       const msg = `${d.name}'s licence ${d.licenseNumber} ${expired ? 'has expired' : 'expires soon'} (${new Date(d.licenseExpiry).toLocaleDateString()})`
       await notify('license', msg, req.isDemo)
-      await sendMail({ to: 'safety@transitops.app', subject: 'Driver licence reminder', text: msg })
+      await sendMail({ to: 'safety@transitops.app', subject: `Licence reminder: ${d.name}`, text: msg, type: 'license', isDemo: req.isDemo })
     }
     res.json({ notified: drivers.length })
   } catch (err) {

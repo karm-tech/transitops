@@ -2,12 +2,12 @@ import { NavLink } from 'react-router-dom'
 import { Truck, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/app/auth'
-import { navItems } from './navItems'
+import { visibleNav } from './navItems'
 
 export default function MobileNav({ open, onClose }) {
   const { user } = useAuth()
   if (!open) return null
-  const items = navItems.filter((item) => !item.adminOnly || user?.role === 'Admin')
+  const items = visibleNav(user?.role)
 
   return (
     <div className="fixed inset-0 z-50 md:hidden">

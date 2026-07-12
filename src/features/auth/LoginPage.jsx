@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Truck, LogIn, Loader2 } from 'lucide-react'
 import { useAuth } from '@/app/auth'
@@ -87,6 +87,10 @@ export default function LoginPage() {
               Sign In
             </button>
           </form>
+
+          <p className="mt-4 text-center text-sm text-muted">
+            New here? <Link to="/signup" className="font-medium text-brand-600 hover:underline">Create an account</Link>
+          </p>
 
           <div className="my-6 flex items-center gap-3 text-xs text-muted">
             <div className="h-px flex-1 bg-black/10 dark:bg-white/10" />

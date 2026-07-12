@@ -4,6 +4,9 @@ import StatusBadge from '@/components/ui/StatusBadge'
 import { formatDate, licenseState, cn } from '@/lib/utils'
 import { api } from '@/lib/api'
 import { useQuery } from '@tanstack/react-query'
+import { useAuth } from '@/app/auth'
+import { DRIVER_DOC_TYPES } from '@/lib/constants'
+import DocumentManager from '@/components/common/DocumentManager'
 import { useDrivers } from './api'
 
 const licenseStyles = {
@@ -25,6 +28,8 @@ function Field({ label, children }) {
 export default function DriverDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const canManage = ['Admin', 'Fleet Manager', 'Safety Officer'].includes(user?.role)
   const { data: driver, isLoading, isError } = useQuery({
     queryKey: ['drivers', id],
     queryFn: async () => (await api.get(`/drivers/${id}`)).data,
@@ -74,6 +79,11 @@ export default function DriverDetailPage() {
             </span>
           </p>
         </div>
+      </div>
+
+      <div className="card mb-5 p-6">
+        <h2 className="mb-4 font-medium">Documents</h2>
+        <DocumentManager kind="driver" ownerId={driver.id} documents={driver.documents || []} docTypes={DRIVER_DOC_TYPES} canManage={canManage} invalidateKey={['drivers', driver.id]} />
       </div>
 
       <div className="card p-6">

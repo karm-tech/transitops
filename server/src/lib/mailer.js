@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import { prisma } from './prisma.js'
 
 const hasSmtp = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER)
 
@@ -10,12 +11,20 @@ const transporter = hasSmtp
     })
   : null
 
-// Sends an email when SMTP is configured; otherwise logs it (so the demo still works).
-export async function sendMail({ to, subject, text }) {
-  if (!transporter) {
-    console.log(`[mail:stub] to=${to} · ${subject} — ${text}`)
-    return { stubbed: true }
+// Sends an email when SMTP is configured (otherwise logs it), and records it to the Sent Mails outbox.
+export async function sendMail({ to, subject, text, type = 'general', isDemo = false }) {
+  let status = 'sent'
+  try {
+    if (transporter) {
+      await transporter.sendMail({ from: process.env.MAIL_FROM || 'TransitOps <no-reply@transitops.app>', to, subject, text })
+    } else {
+      status = 'logged'
+      console.log(`[mail:stub] to=${to} · ${subject}`)
+    }
+  } catch (err) {
+    status = 'failed'
+    console.error('[mail] send failed:', err.message)
   }
-  await transporter.sendMail({ from: process.env.MAIL_FROM || 'TransitOps <no-reply@transitops.app>', to, subject, text })
-  return { sent: true }
+  await prisma.mailLog.create({ data: { to, subject, body: text, type, status, isDemo } })
+  return { status }
 }
