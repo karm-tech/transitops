@@ -21,17 +21,17 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 16:25  •  **Commits:** 37
+> **Last updated:** 2026-07-12 16:44  •  **Commits:** 41
 
 **Recent activity**
+- Merge pull request #19 from karm-tech/feat/form-ux
+- [FEAT]ops:auto fuel logging + trip fuel price, landing page, dashboard & odometer fixes-karm
+- Merge pull request #18 from karm-tech/feat/form-ux
 - [FEAT]form-ux:add search signup docs sent-mails account-menu and name fields-karm
+- Merge pull request #17 from karm-tech/feat/form-ux
 - [IMPROV]forms:auto-save vehicle modal on outside click and clear validation messages-karm
 - Merge pull request #16 from karm-tech/feat/demo-isolation
 - [IMPROV]demo:scope types settings and clear cache per workspace-karm
-- Merge pull request #15 from karm-tech/feat/settings
-- [FEAT]settings:add settings rbac matrix mobile nav clean-seed and readme-karm
-- Merge pull request #14 from karm-tech/feat/reports
-- [FEAT]app:add reports exports detail-pages documents and notifications-karm
 <!-- STATUS:END -->
 
 ---
@@ -56,7 +56,7 @@ Sign in with **email + password** and you get a **clean, empty system** to build
 
 > The two workspaces are fully isolated — demo data never appears in the fresh workspace and vice-versa (scoped per session, one database).
 >
-> 🔑 **To administer the system, log in as Admin** (`admin@transitops.app` / `demo1234`), then open **Users** to create accounts and assign roles. Roles are assigned only by an Admin — there is no public sign-up.
+> 🔑 **New users can self-register** from the login screen ("Create an account") and join as a **Dispatcher** by default. To manage the team, **log in as Admin** (`admin@transitops.app` / `demo1234`) and open **Users** to create accounts and assign any role.
 
 ---
 
@@ -74,19 +74,20 @@ Sign in with **email + password** and you get a **clean, empty system** to build
 
 ## ✨ Features
 
-- **Authentication & RBAC** — Email/password login, JWT sessions, and role-based access (Admin, Fleet Manager, Dispatcher, Safety Officer, Financial Analyst) with route guards. Admin has full access.
+- **Authentication & RBAC** — Email/password login with **public self-registration** (new users join as Dispatcher), JWT sessions, and role-based access (Admin, Fleet Manager, Dispatcher, Safety Officer, Financial Analyst) with route guards. Admin has full access.
 - **Dashboard** — Live KPIs (Active/Available Vehicles, In Maintenance, Active/Pending Trips, Drivers On Duty, Fleet Utilization %) with filters by vehicle type, status, and region.
 - **Vehicle Registry** — Master list of vehicles with a **unique** registration number, load capacity, odometer, acquisition cost, and lifecycle status.
 - **Driver Management** — Driver profiles with license number/category/expiry, safety score, and status — with compliance checks baked in.
 - **Trip Management** — Full trip lifecycle (Draft → Dispatched → Completed → Cancelled) with a **Smart Dispatch Guard** that blocks invalid trips and explains exactly why.
 - **Maintenance** — Log maintenance and the vehicle **auto-moves to In Shop** (hidden from dispatch); closing it restores availability.
 - **Fuel & Expense** — Record fuel logs and expenses; **operational cost auto-computes** per vehicle.
-- **Auto Fuel Logging** — Completing a trip **auto-creates a fuel log** from the litres consumed, priced at the rate entered on completion (or the fleet default), so fuel cost, ROI, and reports stay in sync with zero manual re-entry.
+- **Auto Fuel Logging** — Completing a trip **auto-creates a fuel log** from the litres consumed, priced at the rate entered on completion (or ₹100/L by default), so fuel cost, ROI, and reports stay in sync with zero manual re-entry.
 - **Reports & Analytics** — Fuel efficiency, fleet utilization, operational cost, and Vehicle ROI, with **CSV and PDF export** and visual charts.
-- **Vehicle Documents** — Attach and manage vehicle documents (RC, insurance, permit) per vehicle.
+- **Vehicle & Driver Documents** — Upload, view, download and manage documents (RC, insurance, permit, licence) per vehicle and driver.
 - **License Reminders** — Email reminders for drivers with expiring/expired licenses.
+- **Sent-Mail Outbox** — A **"Sent Mails"** log of every system email (welcome on registration, licence-expiry reminders), scoped per workspace.
 - **Real-time** — Live KPI/status updates across the app via Socket.io.
-- **Polish** — Light theme by default with **dark mode** toggle, global search, filters and sorting, and a consistent, responsive UI.
+- **Polish** — Light theme by default with **dark mode** toggle, a marketing landing page, global search, filters and sorting, and a consistent, responsive UI.
 
 ## 🔄 How It Works
 
@@ -192,7 +193,7 @@ transitops/
 ├── server/                   Express + Prisma backend
 │   ├── src/ routes/ middleware/ lib/
 │   └── prisma/ schema.prisma  seed.js
-└── docs/                     user guide & screenshots
+└── docs/                     screenshots
 ```
 
 ## 📜 Scripts
@@ -203,6 +204,7 @@ transitops/
 | `npm run build` | Build the production bundle |
 | `npm run preview` | Preview the production build |
 | `npm run seed` | Reseed the local database with demo fleet data |
+| `npm run seed:empty` | Reset the database to an empty state |
 
 ---
 
