@@ -18,4 +18,5 @@ export const publicUser = (user) => ({
   email: user.email,
   role: user.role,
   status: user.status,
+  notifyEnabled: user.notifyEnabled,
 })

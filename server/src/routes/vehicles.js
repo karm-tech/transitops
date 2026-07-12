@@ -55,6 +55,7 @@ router.get('/:id', async (req, res, next) => {
       include: {
         trips: { orderBy: { createdAt: 'desc' }, take: 10, include: { driver: true } },
         maintenance: { orderBy: { openedAt: 'desc' }, take: 10 },
+        documents: { orderBy: { uploadedAt: 'desc' } },
       },
     })
     if (!vehicle) throw notFound('Vehicle not found')

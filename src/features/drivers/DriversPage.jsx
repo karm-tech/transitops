@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Plus, Search, Pencil, Trash2, Loader2, Users, AlertTriangle } from 'lucide-react'
 import PageHeader from '@/components/common/PageHeader'
 import EmptyState from '@/components/common/EmptyState'
@@ -31,6 +32,7 @@ function LicenseCell({ expiry }) {
 
 export default function DriversPage() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const canManage = ['Admin', 'Fleet Manager', 'Safety Officer'].includes(user?.role)
 
   const [search, setSearch] = useState('')
@@ -104,7 +106,7 @@ export default function DriversPage() {
               </thead>
               <tbody>
                 {drivers.map((d) => (
-                  <tr key={d.id} className="border-b last:border-0 hover:bg-black/[0.02] dark:hover:bg-white/[0.03]" style={{ borderColor: 'rgb(var(--border))' }}>
+                  <tr key={d.id} onClick={() => navigate(`/drivers/${d.id}`)} className="cursor-pointer border-b last:border-0 hover:bg-black/[0.02] dark:hover:bg-white/[0.03]" style={{ borderColor: 'rgb(var(--border))' }}>
                     <td className="px-4 py-3 font-medium">
                       {d.name}
                       {d.contact && <span className="block text-xs font-normal text-muted">{d.contact}</span>}
@@ -115,7 +117,7 @@ export default function DriversPage() {
                     <td className="px-4 py-3 tabular-nums">{d.safetyScore}</td>
                     <td className="px-4 py-3"><StatusBadge status={d.status} /></td>
                     {canManage && (
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-end gap-1">
                           <button className="btn-ghost px-2" onClick={() => { setEditing(d); setModalOpen(true) }} aria-label="Edit"><Pencil size={14} /></button>
                           <button className="btn-ghost px-2 text-rose-600" onClick={() => onDelete(d)} aria-label="Delete"><Trash2 size={14} /></button>
