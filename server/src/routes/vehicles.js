@@ -10,12 +10,12 @@ const router = Router()
 
 // Type is free-form (custom types allowed); statuses stay fixed as they drive the rules engine.
 const vehicleSchema = z.object({
-  regNumber: z.string().min(3).transform((v) => v.trim().toUpperCase()),
-  name: z.string().min(2),
-  type: z.string().min(2).transform((v) => v.trim()),
-  maxLoadKg: z.coerce.number().int().positive(),
-  odometer: z.coerce.number().int().nonnegative().default(0),
-  acquisitionCost: z.coerce.number().nonnegative().default(0),
+  regNumber: z.string().min(3, 'must be at least 3 characters (e.g. GJ01-VAN-05)').transform((v) => v.trim().toUpperCase()),
+  name: z.string().min(2, 'must be at least 2 characters'),
+  type: z.string().min(2, 'please choose a type'),
+  maxLoadKg: z.coerce.number({ invalid_type_error: 'must be a number' }).int('must be a whole number').positive('must be greater than 0'),
+  odometer: z.coerce.number({ invalid_type_error: 'must be a number' }).int('must be a whole number').nonnegative('cannot be negative').default(0),
+  acquisitionCost: z.coerce.number({ invalid_type_error: 'must be a number' }).nonnegative('cannot be negative').default(0),
   region: z.string().optional().nullable(),
   status: z.enum(VEHICLE_STATUS).default('Available'),
 })
