@@ -8,7 +8,9 @@
 vehicles, drivers, trips, dispatch, maintenance, and fuel/expenses — with **hard business rules**
 that prevent bad dispatches and **auto-manage status** in real time.
 
-> Built for the **Odoo Hackathon**.
+> Logistics teams still run on spreadsheets and paper logbooks — causing scheduling conflicts,
+> missed maintenance, expired-license dispatches, and untracked spend. **TransitOps replaces all of
+> it with one enforced, real-time system** that makes bad operations impossible by design.
 
 `React` · `Vite` · `Tailwind` · `shadcn/ui` · `Express` · `Prisma` · `SQLite` · `Socket.io`
 
@@ -19,32 +21,19 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 09:30  •  **Commits:** 2
+> **Last updated:** 2026-07-12 09:48  •  **Commits:** 4
 
 **Recent activity**
+- Merge pull request #1 from karm-tech/feat/scaffold
+- [FEAT]scaffold:add vite react app shell routing and tooling-karm
 - Initial commit
 <!-- STATUS:END -->
 
 ---
 
-## 🔗 Live Demo
+## 🔗 Demo
 
-- **Live link:** _add your deploy URL here_
-- On the login screen, click **"Open the demo"** — it signs in with sample fleet data, no setup required.
-- **New here? Read the [User Guide](docs/USER_GUIDE.md)** for a step-by-step walkthrough.
-
-## 📸 Screenshots
-
-> Screenshots live in `docs/screenshots/`. Capture them from the running app and drop them in
-> (`dashboard.png`, `trips.png`, `dispatch_block.png`, `reports.png`).
-
-| Dashboard | Trip Dispatch |
-|-----------|---------------|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Trips](docs/screenshots/trips.png) |
-
-| Smart Dispatch Guard | Reports & Analytics |
-|----------------------|---------------------|
-| ![Dispatch Block](docs/screenshots/dispatch_block.png) | ![Reports](docs/screenshots/reports.png) |
+Click **"Open the demo"** on the login screen to sign in instantly with sample fleet data — no setup required.
 
 ---
 
@@ -146,8 +135,9 @@ Prerequisites: **Node.js >= 18** and **npm >= 9**. No database server needed (SQ
 ```bash
 git clone https://github.com/karm-tech/transitops.git
 cd transitops
-npm install      # installs frontend + backend deps and seeds the local database
-npm run dev      # runs the API and web app together
+npm install      # frontend dependencies
+npm run setup    # installs API deps, creates the SQLite database, seeds demo data
+npm run dev      # runs the API (:4000) and web app (:5173) together
 ```
 
 Open **http://localhost:5173** and click **"Open the demo"**.
@@ -188,10 +178,6 @@ transitops/
 | `npm run build` | Build the production bundle |
 | `npm run preview` | Preview the production build |
 | `npm run seed` | Reseed the local database with demo fleet data |
-
-## 🎥 Demo Video
-
-- **Walkthrough:** _add your 5–7 min demo video link here_
 
 ---
 
