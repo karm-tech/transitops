@@ -86,6 +86,19 @@ router.get('/options', async (_req, res, next) => {
   }
 })
 
+router.get('/:id', async (req, res, next) => {
+  try {
+    const trip = await prisma.trip.findUnique({
+      where: { id: req.params.id },
+      include: { vehicle: true, driver: true },
+    })
+    if (!trip) throw notFound('Trip not found')
+    res.json(trip)
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.post('/', canWrite, async (req, res, next) => {
   try {
     const data = createSchema.parse(req.body)

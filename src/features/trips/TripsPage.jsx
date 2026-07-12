@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Plus, Loader2, Route, Send, CheckCircle2, XCircle, ArrowRight } from 'lucide-react'
 import PageHeader from '@/components/common/PageHeader'
 import EmptyState from '@/components/common/EmptyState'
@@ -8,24 +8,15 @@ import { useAuth } from '@/app/auth'
 import { apiError } from '@/lib/api'
 import { TRIP_STATUS, labelFor } from '@/lib/constants'
 import { useTrips, useTripAction } from './api'
-import TripFormModal from './TripFormModal'
 import CompleteTripModal from './CompleteTripModal'
 
 export default function TripsPage() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const canManage = ['Admin', 'Fleet Manager', 'Dispatcher'].includes(user?.role)
 
   const [status, setStatus] = useState('')
-  const [formOpen, setFormOpen] = useState(false)
   const [completing, setCompleting] = useState(null)
-  const [searchParams, setSearchParams] = useSearchParams()
-
-  useEffect(() => {
-    if (searchParams.get('new') && canManage) {
-      setFormOpen(true)
-      setSearchParams({}, { replace: true })
-    }
-  }, [searchParams, canManage, setSearchParams])
 
   const { data: trips = [], isLoading } = useTrips(status ? { status } : undefined)
   const action = useTripAction()
@@ -45,7 +36,7 @@ export default function TripsPage() {
         subtitle="Create trips, dispatch with live rule checks, and track them end to end."
         actions={
           canManage && (
-            <button className="btn-primary" onClick={() => setFormOpen(true)}>
+            <button className="btn-primary" onClick={() => navigate('/trips/new')}>
               <Plus size={16} /> New Trip
             </button>
           )
@@ -82,7 +73,7 @@ export default function TripsPage() {
               </thead>
               <tbody>
                 {trips.map((t) => (
-                  <tr key={t.id} className="border-b last:border-0 hover:bg-black/[0.02] dark:hover:bg-white/[0.03]" style={{ borderColor: 'rgb(var(--border))' }}>
+                  <tr key={t.id} onClick={() => navigate(`/trips/${t.id}`)} className="cursor-pointer border-b last:border-0 hover:bg-black/[0.02] dark:hover:bg-white/[0.03]" style={{ borderColor: 'rgb(var(--border))' }}>
                     <td className="px-4 py-3 font-medium">{t.code}</td>
                     <td className="px-4 py-3">
                       <span className="inline-flex items-center gap-1.5 text-muted">
@@ -94,7 +85,7 @@ export default function TripsPage() {
                     <td className="px-4 py-3 tabular-nums">{t.cargoWeightKg} kg</td>
                     <td className="px-4 py-3"><StatusBadge status={t.status} /></td>
                     {canManage && (
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-end gap-1">
                           {t.status === 'Draft' && (
                             <button className="btn-ghost px-2 text-blue-600" onClick={() => run(t.id, 'dispatch')} title="Dispatch"><Send size={14} /></button>
@@ -116,7 +107,6 @@ export default function TripsPage() {
         )}
       </div>
 
-      <TripFormModal open={formOpen} onClose={() => setFormOpen(false)} />
       <CompleteTripModal open={Boolean(completing)} onClose={() => setCompleting(null)} trip={completing} />
     </div>
   )

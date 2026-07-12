@@ -7,6 +7,8 @@ import DashboardPage from '@/features/dashboard/DashboardPage'
 import VehiclesPage from '@/features/vehicles/VehiclesPage'
 import DriversPage from '@/features/drivers/DriversPage'
 import TripsPage from '@/features/trips/TripsPage'
+import TripCreatePage from '@/features/trips/TripCreatePage'
+import TripDetailPage from '@/features/trips/TripDetailPage'
 import MaintenancePage from '@/features/maintenance/MaintenancePage'
 import UsersPage from '@/features/users/UsersPage'
 import ProfilePage from '@/features/profile/ProfilePage'
@@ -28,6 +30,8 @@ export default function App() {
         <Route path="/fleet" element={<VehiclesPage />} />
         <Route path="/drivers" element={<DriversPage />} />
         <Route path="/trips" element={<TripsPage />} />
+        <Route path="/trips/new" element={<TripCreatePage />} />
+        <Route path="/trips/:id" element={<TripDetailPage />} />
         <Route path="/maintenance" element={<MaintenancePage />} />
         <Route path="/finance" element={<Placeholder title="Fuel & Expenses" />} />
         <Route path="/reports" element={<Placeholder title="Reports & Analytics" />} />
