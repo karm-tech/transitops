@@ -15,6 +15,7 @@ import driverRoutes from './routes/drivers.js'
 import tripRoutes from './routes/trips.js'
 import maintenanceRoutes from './routes/maintenance.js'
 import financeRoutes from './routes/finance.js'
+import dashboardRoutes from './routes/dashboard.js'
 
 const app = express()
 app.use(cors())
@@ -33,6 +34,7 @@ app.use('/api/drivers', driverRoutes)
 app.use('/api/trips', tripRoutes)
 app.use('/api/maintenance', maintenanceRoutes)
 app.use('/api/finance', financeRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 
 app.get('/api/db/summary', async (_req, res, next) => {
   try {
