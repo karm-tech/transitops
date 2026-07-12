@@ -21,9 +21,10 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 10:28  •  **Commits:** 9
+> **Last updated:** 2026-07-12 10:41  •  **Commits:** 10
 
 **Recent activity**
+- [FEAT]vehicles:add registry crud custom types and admin role-karm
 - [FEAT]vehicles:add registry crud with unique reg and filters-karm
 - Merge pull request #3 from karm-tech/feat/auth
 - [FEAT]auth:add jwt login rbac guards and one-click demo-karm
@@ -31,7 +32,6 @@ that prevent bad dispatches and **auto-manage status** in real time.
 - [FEAT]backend:add prisma schema seed express api and socket-karm
 - Merge pull request #1 from karm-tech/feat/scaffold
 - [FEAT]scaffold:add vite react app shell routing and tooling-karm
-- Initial commit
 <!-- STATUS:END -->
 
 ---

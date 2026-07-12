@@ -3,13 +3,19 @@ import { useForm } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
 import Modal from '@/components/ui/Modal'
 import { apiError } from '@/lib/api'
-import { VEHICLE_STATUS, VEHICLE_TYPES, labelFor } from '@/lib/constants'
-import { useSaveVehicle } from './api'
+import { VEHICLE_STATUS, labelFor } from '@/lib/constants'
+import { useSaveVehicle, useVehicleTypes } from './api'
 
-const empty = { regNumber: '', name: '', type: 'Van', maxLoadKg: '', odometer: 0, acquisitionCost: 0, region: '', status: 'Available' }
+const empty = { regNumber: '', name: '', type: '', maxLoadKg: '', odometer: 0, acquisitionCost: 0, region: '', status: 'Available' }
+
+function FieldError({ error }) {
+  if (!error) return null
+  return <p className="mt-1 text-xs text-rose-600">{error.message || 'This field is required'}</p>
+}
 
 export default function VehicleFormModal({ open, onClose, vehicle }) {
-  const { register, handleSubmit, reset } = useForm({ defaultValues: empty })
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({ defaultValues: empty })
+  const { data: types = [] } = useVehicleTypes()
   const save = useSaveVehicle()
   const [error, setError] = useState('')
 
@@ -50,23 +56,27 @@ export default function VehicleFormModal({ open, onClose, vehicle }) {
       )}
       <form id="vehicle-form" onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
         <label className="col-span-2 text-sm">
-          Registration Number
-          <input className="input mt-1" placeholder="GJ01-VAN-05" {...register('regNumber', { required: true })} />
+          Registration Number <span className="text-rose-500">*</span>
+          <input className="input mt-1" placeholder="GJ01-VAN-05" {...register('regNumber', { required: 'Registration number is required' })} />
+          <FieldError error={errors.regNumber} />
         </label>
         <label className="text-sm">
-          Name / Model
-          <input className="input mt-1" {...register('name', { required: true })} />
+          Name / Model <span className="text-rose-500">*</span>
+          <input className="input mt-1" {...register('name', { required: 'Name is required' })} />
+          <FieldError error={errors.name} />
         </label>
         <label className="text-sm">
-          Type
-          <input className="input mt-1" list="vehicle-types" placeholder="Van, Truck, or a new type…" {...register('type', { required: true })} />
-          <datalist id="vehicle-types">
-            {VEHICLE_TYPES.map((t) => <option key={t} value={t} />)}
-          </datalist>
+          Type <span className="text-rose-500">*</span>
+          <select className="input mt-1" {...register('type', { required: 'Please choose a type' })}>
+            <option value="">Select type…</option>
+            {types.map((t) => <option key={t.id} value={t.name}>{t.name}</option>)}
+          </select>
+          <FieldError error={errors.type} />
         </label>
         <label className="text-sm">
-          Max Load (kg)
-          <input className="input mt-1" type="number" {...register('maxLoadKg', { required: true })} />
+          Max Load (kg) <span className="text-rose-500">*</span>
+          <input className="input mt-1" type="number" {...register('maxLoadKg', { required: 'Capacity is required' })} />
+          <FieldError error={errors.maxLoadKg} />
         </label>
         <label className="text-sm">
           Odometer (km)

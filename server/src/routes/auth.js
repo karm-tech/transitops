@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma.js'
-import { hashPassword, verifyPassword, signToken, publicUser } from '../lib/auth.js'
+import { verifyPassword, signToken, publicUser } from '../lib/auth.js'
 import { requireAuth } from '../middleware/auth.js'
-import { badRequest, conflict, HttpError } from '../middleware/error.js'
+import { badRequest, HttpError } from '../middleware/error.js'
 import { ROLES } from '../lib/constants.js'
 
 const router = Router()
@@ -11,12 +11,6 @@ const router = Router()
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
-})
-
-const registerSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  password: z.string().min(6),
 })
 
 router.post('/login', async (req, res, next) => {
@@ -27,22 +21,6 @@ router.post('/login', async (req, res, next) => {
       throw new HttpError(401, 'Invalid email or password')
     }
     res.json({ token: signToken(user), user: publicUser(user) })
-  } catch (err) {
-    next(err)
-  }
-})
-
-// New signups get the non-privileged Dispatcher role — roles are never self-assigned.
-router.post('/register', async (req, res, next) => {
-  try {
-    const { name, email, password } = registerSchema.parse(req.body)
-    const existing = await prisma.user.findUnique({ where: { email } })
-    if (existing) throw conflict('An account with this email already exists')
-
-    const user = await prisma.user.create({
-      data: { name, email, passwordHash: await hashPassword(password), role: ROLES.DISPATCHER },
-    })
-    res.status(201).json({ token: signToken(user), user: publicUser(user) })
   } catch (err) {
     next(err)
   }

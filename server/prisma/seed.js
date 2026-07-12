@@ -17,10 +17,15 @@ async function reset() {
   await prisma.user.deleteMany()
   await prisma.activityLog.deleteMany()
   await prisma.setting.deleteMany()
+  await prisma.vehicleType.deleteMany()
 }
 
 async function main() {
   await reset()
+
+  await prisma.vehicleType.createMany({
+    data: ['Van', 'Truck', 'Mini', 'Bus', 'Tempo'].map((name) => ({ name })),
+  })
 
   const passwordHash = await bcrypt.hash('demo1234', 10)
   await prisma.user.createMany({
