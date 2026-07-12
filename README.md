@@ -21,17 +21,17 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 12:30  •  **Commits:** 29
+> **Last updated:** 2026-07-12 12:58  •  **Commits:** 31
 
 **Recent activity**
+- Merge pull request #14 from karm-tech/feat/reports
+- [FEAT]app:add reports exports detail-pages documents and notifications-karm
 - Merge pull request #13 from karm-tech/feat/dashboard
 - [FEAT]dashboard:wire live kpis charts and realtime updates-karm
 - Merge pull request #12 from karm-tech/feat/finance
 - [FEAT]finance:add fuel expense logs and auto operational cost-karm
 - Merge pull request #11 from karm-tech/feat/trip-details
 - [FEAT]trips:add full-page create detail and prev-next navigation-karm
-- Merge pull request #10 from karm-tech/feat/maintenance
-- [FEAT]maintenance:add service workflow with R9 R10 status sync-karm
 <!-- STATUS:END -->
 
 ---
@@ -52,6 +52,18 @@ that prevent bad dispatches and **auto-manage status** in real time.
 | Financial Analyst | `finance@transitops.app` | `demo1234` |
 
 > 🔑 **To administer the system, log in as Admin** (`admin@transitops.app` / `demo1234`), then open **Users** to create accounts and assign roles. Roles are assigned only by an Admin — there is no public sign-up.
+
+---
+
+## 📸 Screenshots
+
+| Dashboard | Trip Detail |
+|-----------|-------------|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Trip Detail](docs/screenshots/trip-detail.png) |
+
+| Reports & Analytics | Dark Mode |
+|---------------------|-----------|
+| ![Reports](docs/screenshots/reports.png) | ![Dark Mode](docs/screenshots/dark-mode.png) |
 
 ---
 

@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from '@/components/layout/AppShell'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
-import Placeholder from '@/components/common/Placeholder'
 import LoginPage from '@/features/auth/LoginPage'
 import DashboardPage from '@/features/dashboard/DashboardPage'
 import VehiclesPage from '@/features/vehicles/VehiclesPage'
@@ -14,6 +13,7 @@ import TripDetailPage from '@/features/trips/TripDetailPage'
 import MaintenancePage from '@/features/maintenance/MaintenancePage'
 import FinancePage from '@/features/finance/FinancePage'
 import ReportsPage from '@/features/reports/ReportsPage'
+import SettingsPage from '@/features/settings/SettingsPage'
 import UsersPage from '@/features/users/UsersPage'
 import ProfilePage from '@/features/profile/ProfilePage'
 
@@ -43,7 +43,7 @@ export default function App() {
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/settings" element={<Placeholder title="Settings & RBAC" />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

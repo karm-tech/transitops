@@ -19,6 +19,7 @@ import dashboardRoutes from './routes/dashboard.js'
 import reportRoutes from './routes/reports.js'
 import documentRoutes from './routes/documents.js'
 import notificationRoutes from './routes/notifications.js'
+import settingsRoutes from './routes/settings.js'
 
 const app = express()
 app.use(cors())
@@ -41,6 +42,7 @@ app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/reports', reportRoutes)
 app.use('/api/documents', documentRoutes)
 app.use('/api/notifications', notificationRoutes)
+app.use('/api/settings', settingsRoutes)
 
 app.get('/api/db/summary', async (_req, res, next) => {
   try {

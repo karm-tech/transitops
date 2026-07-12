@@ -1,10 +1,10 @@
 import { useNavigate, Link } from 'react-router-dom'
-import { Search, Moon, Sun, Plus, Truck, LogOut } from 'lucide-react'
+import { Search, Moon, Sun, Plus, Truck, LogOut, Menu } from 'lucide-react'
 import { useTheme } from '@/app/theme'
 import { useAuth } from '@/app/auth'
 import NotificationBell from './NotificationBell'
 
-export default function Topbar() {
+export default function Topbar({ onMenu }) {
   const { theme, toggle } = useTheme()
   const { user, logout } = useAuth()
   const navigate = useNavigate()
@@ -22,6 +22,9 @@ export default function Topbar() {
 
   return (
     <header className="surface flex items-center gap-3 border-b px-4 py-3">
+      <button onClick={onMenu} className="btn-ghost px-2 md:hidden" aria-label="Open menu">
+        <Menu size={18} />
+      </button>
       <div className="flex items-center gap-2 md:hidden">
         <div className="grid h-8 w-8 place-items-center rounded-lg bg-brand-500 text-white">
           <Truck size={18} />

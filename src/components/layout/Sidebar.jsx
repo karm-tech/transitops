@@ -1,33 +1,12 @@
 import { NavLink } from 'react-router-dom'
-import {
-  LayoutDashboard,
-  Truck,
-  Users,
-  Route,
-  Wrench,
-  Fuel,
-  BarChart3,
-  Settings,
-  UserCog,
-} from 'lucide-react'
+import { Truck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/app/auth'
-
-const nav = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/fleet', label: 'Fleet', icon: Truck },
-  { to: '/drivers', label: 'Drivers', icon: Users },
-  { to: '/trips', label: 'Trips', icon: Route },
-  { to: '/maintenance', label: 'Maintenance', icon: Wrench },
-  { to: '/finance', label: 'Fuel & Expenses', icon: Fuel },
-  { to: '/reports', label: 'Analytics', icon: BarChart3 },
-  { to: '/users', label: 'Users', icon: UserCog, adminOnly: true },
-  { to: '/settings', label: 'Settings', icon: Settings },
-]
+import { navItems } from './navItems'
 
 export default function Sidebar() {
   const { user } = useAuth()
-  const items = nav.filter((item) => !item.adminOnly || user?.role === 'Admin')
+  const items = navItems.filter((item) => !item.adminOnly || user?.role === 'Admin')
 
   return (
     <aside className="surface hidden w-60 shrink-0 flex-col border-r md:flex">
@@ -48,9 +27,7 @@ export default function Sidebar() {
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-brand-500/10 text-brand-600'
-                  : 'text-muted hover:bg-black/5 dark:hover:bg-white/5',
+                isActive ? 'bg-brand-500/10 text-brand-600' : 'text-muted hover:bg-black/5 dark:hover:bg-white/5',
               )
             }
           >
