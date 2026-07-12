@@ -29,4 +29,3 @@ export const ROLE_DESCRIPTION = {
 }
 
 export const accessFor = (role) => ROLE_ACCESS[role] || ['dashboard']
-export const canAccess = (role, moduleKey) => accessFor(role).includes(moduleKey)

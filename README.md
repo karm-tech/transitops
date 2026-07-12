@@ -21,9 +21,10 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 16:44  •  **Commits:** 41
+> **Last updated:** 2026-07-12 16:45  •  **Commits:** 42
 
 **Recent activity**
+- [FEAT]trips:auto-log fuel on completion with per-trip price (default ₹100/L) + dashboard/odometer fixes-karm
 - Merge pull request #19 from karm-tech/feat/form-ux
 - [FEAT]ops:auto fuel logging + trip fuel price, landing page, dashboard & odometer fixes-karm
 - Merge pull request #18 from karm-tech/feat/form-ux
@@ -31,7 +32,6 @@ that prevent bad dispatches and **auto-manage status** in real time.
 - Merge pull request #17 from karm-tech/feat/form-ux
 - [IMPROV]forms:auto-save vehicle modal on outside click and clear validation messages-karm
 - Merge pull request #16 from karm-tech/feat/demo-isolation
-- [IMPROV]demo:scope types settings and clear cache per workspace-karm
 <!-- STATUS:END -->
 
 ---
