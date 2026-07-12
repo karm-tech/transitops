@@ -21,9 +21,11 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 09:48  •  **Commits:** 4
+> **Last updated:** 2026-07-12 10:06  •  **Commits:** 6
 
 **Recent activity**
+- Merge pull request #2 from karm-tech/feat/backend
+- [FEAT]backend:add prisma schema seed express api and socket-karm
 - Merge pull request #1 from karm-tech/feat/scaffold
 - [FEAT]scaffold:add vite react app shell routing and tooling-karm
 - Initial commit

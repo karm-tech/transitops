@@ -7,6 +7,7 @@ import { Server } from 'socket.io'
 import { prisma } from './lib/prisma.js'
 import { setIO } from './lib/realtime.js'
 import { errorHandler } from './middleware/error.js'
+import authRoutes from './routes/auth.js'
 
 const app = express()
 app.use(cors())
@@ -16,6 +17,8 @@ app.use(morgan('dev'))
 app.use('/uploads', express.static('uploads'))
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'transitops-api' }))
+
+app.use('/api/auth', authRoutes)
 
 app.get('/api/db/summary', async (_req, res, next) => {
   try {
