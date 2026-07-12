@@ -31,7 +31,8 @@ router.get('/', async (req, res, next) => {
     })
 
     const totalDistance = trips.reduce((s, t) => s + (t.plannedDistanceKm || 0), 0)
-    const totalLitres = fuel.reduce((s, f) => s + (f.liters || 0), 0)
+    // Fuel efficiency = distance / fuel actually consumed on trips (Step 6 captures this on completion).
+    const totalLitres = trips.reduce((s, t) => s + (t.fuelConsumed || 0), 0)
     const totalRevenue = trips.reduce((s, t) => s + (t.revenue || 0), 0)
     const totalFuelCost = fuel.reduce((s, f) => s + (f.cost || 0), 0)
     const totalMaint = maintenance.reduce((s, m) => s + (m.cost || 0), 0)

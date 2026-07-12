@@ -10,10 +10,12 @@ export default function CompleteTripModal({ open, onClose, trip }) {
   const action = useTripAction()
   const [error, setError] = useState('')
 
+  const currentOdometer = trip?.vehicle?.odometer
+
   useEffect(() => {
-    reset({ finalOdometer: '', fuelConsumed: '', revenue: '' })
+    reset({ finalOdometer: currentOdometer ?? '', fuelConsumed: '', fuelPrice: '', revenue: '' })
     setError('')
-  }, [open, reset])
+  }, [open, reset, currentOdometer])
 
   const onSubmit = async (values) => {
     setError('')
@@ -46,18 +48,24 @@ export default function CompleteTripModal({ open, onClose, trip }) {
         </div>
       )}
       <p className="mb-4 text-sm text-muted">Capture the trip's final figures. The vehicle and driver return to Available.</p>
-      <form id="complete-form" onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-3 gap-4">
+      <form id="complete-form" onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
         <label className="text-sm">
           Final Odometer
           <input className="input mt-1" type="number" {...register('finalOdometer')} />
+          {currentOdometer != null && <span className="mt-1 block text-xs text-muted">Current: {currentOdometer.toLocaleString()} km</span>}
+        </label>
+        <label className="text-sm">
+          Revenue
+          <input className="input mt-1" type="number" step="any" {...register('revenue')} />
         </label>
         <label className="text-sm">
           Fuel Consumed (L)
           <input className="input mt-1" type="number" step="any" {...register('fuelConsumed')} />
         </label>
         <label className="text-sm">
-          Revenue
-          <input className="input mt-1" type="number" step="any" {...register('revenue')} />
+          Fuel Price (₹/L)
+          <input className="input mt-1" type="number" step="any" placeholder="100" {...register('fuelPrice')} />
+          <span className="mt-1 block text-xs text-muted">Blank counts as ₹100/L. Logs a fuel entry automatically.</span>
         </label>
       </form>
     </Modal>

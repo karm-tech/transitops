@@ -39,6 +39,7 @@ const createSchema = z.object({
 const completeSchema = z.object({
   finalOdometer: z.coerce.number().int().nonnegative().optional(),
   fuelConsumed: z.coerce.number().nonnegative().optional(),
+  fuelPrice: z.coerce.number().nonnegative().optional(),
   revenue: z.coerce.number().nonnegative().optional(),
 })
 
@@ -186,7 +187,7 @@ router.post('/:id/dispatch', canWrite, async (req, res, next) => {
 // R7: completing restores vehicle + driver to Available and updates the odometer.
 router.post('/:id/complete', canWrite, async (req, res, next) => {
   try {
-    const data = completeSchema.parse(req.body)
+    const { fuelPrice, ...data } = completeSchema.parse(req.body)
     const trip = await prisma.trip.findFirst({ where: { id: req.params.id, isDemo: req.isDemo } })
     if (!trip) throw notFound('Trip not found')
     if (trip.status !== 'Dispatched') throw badRequest('Only dispatched trips can be completed')
@@ -199,8 +200,28 @@ router.post('/:id/complete', canWrite, async (req, res, next) => {
         data: { status: 'Available', ...(data.finalOdometer ? { odometer: data.finalOdometer } : {}) },
       }),
     ]
+
+    // Automation: a completed trip's fuel is logged straight into the fuel ledger.
+    // Price uses the rate entered at completion, else a default of ₹100/L — no manual re-entry.
+    if (data.fuelConsumed > 0) {
+      const price = fuelPrice ?? 100
+      ops.push(
+        prisma.fuelLog.create({
+          data: {
+            liters: data.fuelConsumed,
+            cost: Number((data.fuelConsumed * price).toFixed(2)),
+            note: `Auto-logged from ${trip.code}`,
+            tripId: trip.id,
+            vehicleId: trip.vehicleId,
+            isDemo: req.isDemo,
+          },
+        }),
+      )
+    }
+
     await prisma.$transaction(ops)
     emitEvent('trips:changed', { id: trip.id })
+    emitEvent('finance:changed', { tripId: trip.id })
     await notify('trip', `${trip.code} completed`, req.isDemo)
     res.json({ ok: true })
   } catch (err) {

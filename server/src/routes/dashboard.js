@@ -21,7 +21,7 @@ router.get('/', async (req, res, next) => {
       prisma.vehicle.findMany({ where: vehicleWhere }),
       prisma.trip.count({ where: { isDemo: demo, status: 'Dispatched' } }),
       prisma.trip.count({ where: { isDemo: demo, status: 'Draft' } }),
-      prisma.driver.count({ where: { isDemo: demo, status: { in: ['Available', 'OnTrip'] } } }),
+      prisma.driver.count({ where: { isDemo: demo, status: 'OnTrip' } }),
       prisma.trip.findMany({ where: { isDemo: demo }, orderBy: { createdAt: 'desc' }, take: 5, include: { vehicle: true, driver: true } }),
       prisma.vehicle.findMany({ where: { isDemo: demo }, distinct: ['region'], select: { region: true } }),
     ])

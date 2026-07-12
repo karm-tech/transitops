@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus, Loader2, Fuel, Wrench, Receipt, Wallet } from 'lucide-react'
+import { Plus, Loader2, Fuel, Wrench, Receipt, Wallet, Zap } from 'lucide-react'
 import PageHeader from '@/components/common/PageHeader'
 import EmptyState from '@/components/common/EmptyState'
 import { useAuth } from '@/app/auth'
@@ -62,13 +62,22 @@ export default function FinancePage() {
               <table className="w-full text-sm">
                 <thead className="text-left text-xs uppercase text-muted">
                   <tr className="border-b" style={{ borderColor: 'rgb(var(--border))' }}>
-                    <th className="px-4 py-3">Vehicle</th><th className="px-4 py-3">Date</th><th className="px-4 py-3">Litres</th><th className="px-4 py-3">Cost</th>
+                    <th className="px-4 py-3">Vehicle</th><th className="px-4 py-3">Source</th><th className="px-4 py-3">Date</th><th className="px-4 py-3">Litres</th><th className="px-4 py-3">Cost</th>
                   </tr>
                 </thead>
                 <tbody>
                   {fuel.map((f) => (
                     <tr key={f.id} className="border-b last:border-0" style={{ borderColor: 'rgb(var(--border))' }}>
                       <td className="px-4 py-2.5 font-medium">{f.vehicle?.regNumber}</td>
+                      <td className="px-4 py-2.5">
+                        {f.tripId ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-600 dark:bg-brand-950/40 dark:text-brand-300">
+                            <Zap size={11} /> Auto
+                          </span>
+                        ) : (
+                          <span className="text-xs text-muted">Manual</span>
+                        )}
+                      </td>
                       <td className="px-4 py-2.5">{formatDate(f.date)}</td>
                       <td className="px-4 py-2.5 tabular-nums">{f.liters} L</td>
                       <td className="px-4 py-2.5 tabular-nums">{formatCurrency(f.cost)}</td>
