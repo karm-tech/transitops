@@ -7,6 +7,7 @@ import DashboardPage from '@/features/dashboard/DashboardPage'
 import VehiclesPage from '@/features/vehicles/VehiclesPage'
 import DriversPage from '@/features/drivers/DriversPage'
 import TripsPage from '@/features/trips/TripsPage'
+import MaintenancePage from '@/features/maintenance/MaintenancePage'
 import UsersPage from '@/features/users/UsersPage'
 import ProfilePage from '@/features/profile/ProfilePage'
 
@@ -27,7 +28,7 @@ export default function App() {
         <Route path="/fleet" element={<VehiclesPage />} />
         <Route path="/drivers" element={<DriversPage />} />
         <Route path="/trips" element={<TripsPage />} />
-        <Route path="/maintenance" element={<Placeholder title="Maintenance" />} />
+        <Route path="/maintenance" element={<MaintenancePage />} />
         <Route path="/finance" element={<Placeholder title="Fuel & Expenses" />} />
         <Route path="/reports" element={<Placeholder title="Reports & Analytics" />} />
         <Route path="/users" element={<UsersPage />} />
