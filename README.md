@@ -21,17 +21,17 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 10:57  •  **Commits:** 14
+> **Last updated:** 2026-07-12 11:06  •  **Commits:** 17
 
 **Recent activity**
+- Merge pull request #7 from karm-tech/feat/users
+- [FEAT]users:add admin user management profile page and login docs-karm
+- Merge pull request #6 from karm-tech/feat/users
 - [FEAT]users:add admin user management and profile page-karm
 - Merge pull request #5 from karm-tech/feat/vehicles
 - [FEAT]vehicles:add registry managed types admin role and demo banner-karm
 - Merge pull request #4 from karm-tech/feat/vehicles
 - [FEAT]vehicles:add registry crud custom types and admin role-karm
-- [FEAT]vehicles:add registry crud with unique reg and filters-karm
-- Merge pull request #3 from karm-tech/feat/auth
-- [FEAT]auth:add jwt login rbac guards and one-click demo-karm
 <!-- STATUS:END -->
 
 ---

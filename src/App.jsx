@@ -5,6 +5,7 @@ import Placeholder from '@/components/common/Placeholder'
 import LoginPage from '@/features/auth/LoginPage'
 import DashboardPage from '@/features/dashboard/DashboardPage'
 import VehiclesPage from '@/features/vehicles/VehiclesPage'
+import DriversPage from '@/features/drivers/DriversPage'
 import UsersPage from '@/features/users/UsersPage'
 import ProfilePage from '@/features/profile/ProfilePage'
 
@@ -23,7 +24,7 @@ export default function App() {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/fleet" element={<VehiclesPage />} />
-        <Route path="/drivers" element={<Placeholder title="Drivers & Safety" />} />
+        <Route path="/drivers" element={<DriversPage />} />
         <Route path="/trips" element={<Placeholder title="Trip Dispatcher" />} />
         <Route path="/maintenance" element={<Placeholder title="Maintenance" />} />
         <Route path="/finance" element={<Placeholder title="Fuel & Expenses" />} />

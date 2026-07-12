@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.js'
 import vehicleRoutes from './routes/vehicles.js'
 import vehicleTypeRoutes from './routes/vehicleTypes.js'
 import userRoutes from './routes/users.js'
+import driverRoutes from './routes/drivers.js'
 
 const app = express()
 app.use(cors())
@@ -25,6 +26,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/vehicles', vehicleRoutes)
 app.use('/api/vehicle-types', vehicleTypeRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/drivers', driverRoutes)
 
 app.get('/api/db/summary', async (_req, res, next) => {
   try {
