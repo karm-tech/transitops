@@ -10,6 +10,7 @@ import TripsPage from '@/features/trips/TripsPage'
 import TripCreatePage from '@/features/trips/TripCreatePage'
 import TripDetailPage from '@/features/trips/TripDetailPage'
 import MaintenancePage from '@/features/maintenance/MaintenancePage'
+import FinancePage from '@/features/finance/FinancePage'
 import UsersPage from '@/features/users/UsersPage'
 import ProfilePage from '@/features/profile/ProfilePage'
 
@@ -33,7 +34,7 @@ export default function App() {
         <Route path="/trips/new" element={<TripCreatePage />} />
         <Route path="/trips/:id" element={<TripDetailPage />} />
         <Route path="/maintenance" element={<MaintenancePage />} />
-        <Route path="/finance" element={<Placeholder title="Fuel & Expenses" />} />
+        <Route path="/finance" element={<FinancePage />} />
         <Route path="/reports" element={<Placeholder title="Reports & Analytics" />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/profile" element={<ProfilePage />} />

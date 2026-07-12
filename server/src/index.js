@@ -14,6 +14,7 @@ import userRoutes from './routes/users.js'
 import driverRoutes from './routes/drivers.js'
 import tripRoutes from './routes/trips.js'
 import maintenanceRoutes from './routes/maintenance.js'
+import financeRoutes from './routes/finance.js'
 
 const app = express()
 app.use(cors())
@@ -31,6 +32,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/drivers', driverRoutes)
 app.use('/api/trips', tripRoutes)
 app.use('/api/maintenance', maintenanceRoutes)
+app.use('/api/finance', financeRoutes)
 
 app.get('/api/db/summary', async (_req, res, next) => {
   try {
