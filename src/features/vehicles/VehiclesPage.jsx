@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { Plus, Search, Pencil, Trash2, Loader2, Truck } from 'lucide-react'
+import { Plus, Search, Pencil, Trash2, Loader2, Truck, Tag } from 'lucide-react'
 import PageHeader from '@/components/common/PageHeader'
 import EmptyState from '@/components/common/EmptyState'
 import StatusBadge from '@/components/ui/StatusBadge'
 import { useAuth } from '@/app/auth'
 import { formatCurrency } from '@/lib/utils'
-import { VEHICLE_STATUS, VEHICLE_TYPES, labelFor } from '@/lib/constants'
-import { useVehicles, useDeleteVehicle } from './api'
+import { VEHICLE_STATUS, labelFor } from '@/lib/constants'
+import { useVehicles, useDeleteVehicle, useVehicleTypes } from './api'
 import VehicleFormModal from './VehicleFormModal'
+import ManageTypesModal from './ManageTypesModal'
 
 export default function VehiclesPage() {
   const { user } = useAuth()
@@ -19,12 +20,14 @@ export default function VehiclesPage() {
   const [sort, setSort] = useState('createdAt')
   const [editing, setEditing] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const [typesOpen, setTypesOpen] = useState(false)
 
   const params = { ...(search && { search }), ...(status && { status }), ...(type && { type }), sort }
   const { data: vehicles = [], isLoading } = useVehicles(params)
+  const { data: types = [] } = useVehicleTypes()
   const del = useDeleteVehicle()
 
-  const typeOptions = Array.from(new Set([...VEHICLE_TYPES, ...vehicles.map((v) => v.type)]))
+  const typeOptions = types.map((t) => t.name)
 
   const openCreate = () => {
     setEditing(null)
@@ -50,9 +53,14 @@ export default function VehiclesPage() {
         subtitle="Your fleet — registration, capacity, condition and status."
         actions={
           canManage && (
-            <button className="btn-primary" onClick={openCreate}>
-              <Plus size={16} /> Add Vehicle
-            </button>
+            <div className="flex gap-2">
+              <button className="btn-ghost" onClick={() => setTypesOpen(true)}>
+                <Tag size={16} /> Manage Types
+              </button>
+              <button className="btn-primary" onClick={openCreate}>
+                <Plus size={16} /> Add Vehicle
+              </button>
+            </div>
           )
         }
       />
@@ -125,6 +133,7 @@ export default function VehiclesPage() {
       </div>
 
       <VehicleFormModal open={modalOpen} onClose={() => setModalOpen(false)} vehicle={editing} />
+      <ManageTypesModal open={typesOpen} onClose={() => setTypesOpen(false)} />
     </div>
   )
 }

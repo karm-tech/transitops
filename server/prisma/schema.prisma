@@ -132,3 +132,9 @@ model Setting {
   distanceUnit String @default("km")
   rbacMatrix   String @default("{}")
 }
+
+model VehicleType {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}

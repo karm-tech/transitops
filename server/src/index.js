@@ -9,6 +9,7 @@ import { setIO } from './lib/realtime.js'
 import { errorHandler } from './middleware/error.js'
 import authRoutes from './routes/auth.js'
 import vehicleRoutes from './routes/vehicles.js'
+import vehicleTypeRoutes from './routes/vehicleTypes.js'
 
 const app = express()
 app.use(cors())
@@ -21,6 +22,7 @@ app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'transit
 
 app.use('/api/auth', authRoutes)
 app.use('/api/vehicles', vehicleRoutes)
+app.use('/api/vehicle-types', vehicleTypeRoutes)
 
 app.get('/api/db/summary', async (_req, res, next) => {
   try {

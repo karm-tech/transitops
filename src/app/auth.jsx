@@ -2,10 +2,12 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { api, TOKEN_KEY } from '@/lib/api'
 
 const AuthContext = createContext(null)
+const DEMO_KEY = 'transitops_demo'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [isDemo, setIsDemo] = useState(localStorage.getItem(DEMO_KEY) === '1')
 
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY)
@@ -20,8 +22,11 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false))
   }, [])
 
-  const persist = ({ token, user }) => {
+  const persist = ({ token, user }, demo = false) => {
     localStorage.setItem(TOKEN_KEY, token)
+    if (demo) localStorage.setItem(DEMO_KEY, '1')
+    else localStorage.removeItem(DEMO_KEY)
+    setIsDemo(demo)
     setUser(user)
     return user
   }
@@ -31,23 +36,20 @@ export function AuthProvider({ children }) {
     return persist(data)
   }
 
-  const register = async (name, email, password) => {
-    const { data } = await api.post('/auth/register', { name, email, password })
-    return persist(data)
-  }
-
   const demoLogin = async (role) => {
     const { data } = await api.post('/auth/demo', { role })
-    return persist(data)
+    return persist(data, true)
   }
 
   const logout = () => {
     localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(DEMO_KEY)
+    setIsDemo(false)
     setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, demoLogin, logout }}>
+    <AuthContext.Provider value={{ user, loading, isDemo, login, demoLogin, logout }}>
       {children}
     </AuthContext.Provider>
   )
