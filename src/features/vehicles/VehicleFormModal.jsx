@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Save } from 'lucide-react'
 import Modal from '@/components/ui/Modal'
 import { apiError } from '@/lib/api'
 import { VEHICLE_STATUS, labelFor } from '@/lib/constants'
@@ -34,19 +34,28 @@ export default function VehicleFormModal({ open, onClose, vehicle }) {
     }
   }
 
+  // Clicking outside auto-saves when the form is valid; otherwise it just closes.
+  const saveOnBackdrop = handleSubmit(onSubmit, () => onClose())
+
   return (
     <Modal
       open={open}
       onClose={onClose}
+      onBackdrop={saveOnBackdrop}
       title={vehicle ? 'Edit Vehicle' : 'Register Vehicle'}
       footer={
-        <>
-          <button className="btn-ghost" onClick={onClose} type="button">Cancel</button>
-          <button className="btn-primary" form="vehicle-form" disabled={save.isPending}>
-            {save.isPending && <Loader2 size={15} className="animate-spin" />}
-            {vehicle ? 'Save Changes' : 'Register'}
-          </button>
-        </>
+        <div className="flex flex-1 items-center justify-between">
+          <span className="hidden items-center gap-1 text-xs text-muted sm:flex">
+            <Save size={12} /> Click outside to auto-save
+          </span>
+          <div className="flex gap-2">
+            <button className="btn-ghost" onClick={onClose} type="button">Cancel</button>
+            <button className="btn-primary" form="vehicle-form" disabled={save.isPending}>
+              {save.isPending && <Loader2 size={15} className="animate-spin" />}
+              {vehicle ? 'Save Changes' : 'Register'}
+            </button>
+          </div>
+        </div>
       }
     >
       {error && (

@@ -21,17 +21,17 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 13:42  •  **Commits:** 33
+> **Last updated:** 2026-07-12 14:24  •  **Commits:** 35
 
 **Recent activity**
+- Merge pull request #16 from karm-tech/feat/demo-isolation
+- [IMPROV]demo:scope types settings and clear cache per workspace-karm
 - Merge pull request #15 from karm-tech/feat/settings
 - [FEAT]settings:add settings rbac matrix mobile nav clean-seed and readme-karm
 - Merge pull request #14 from karm-tech/feat/reports
 - [FEAT]app:add reports exports detail-pages documents and notifications-karm
 - Merge pull request #13 from karm-tech/feat/dashboard
 - [FEAT]dashboard:wire live kpis charts and realtime updates-karm
-- Merge pull request #12 from karm-tech/feat/finance
-- [FEAT]finance:add fuel expense logs and auto operational cost-karm
 <!-- STATUS:END -->
 
 ---
