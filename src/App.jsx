@@ -1,12 +1,22 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from '@/components/layout/AppShell'
+import ProtectedRoute from '@/components/common/ProtectedRoute'
 import Placeholder from '@/components/common/Placeholder'
+import LoginPage from '@/features/auth/LoginPage'
 import DashboardPage from '@/features/dashboard/DashboardPage'
 
 export default function App() {
   return (
     <Routes>
-      <Route element={<AppShell />}>
+      <Route path="/login" element={<LoginPage />} />
+
+      <Route
+        element={
+          <ProtectedRoute>
+            <AppShell />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/fleet" element={<Placeholder title="Vehicle Registry" />} />
@@ -17,6 +27,7 @@ export default function App() {
         <Route path="/reports" element={<Placeholder title="Reports & Analytics" />} />
         <Route path="/settings" element={<Placeholder title="Settings & RBAC" />} />
       </Route>
+
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   )
