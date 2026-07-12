@@ -21,9 +21,10 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 10:55  •  **Commits:** 13
+> **Last updated:** 2026-07-12 10:57  •  **Commits:** 14
 
 **Recent activity**
+- [FEAT]users:add admin user management and profile page-karm
 - Merge pull request #5 from karm-tech/feat/vehicles
 - [FEAT]vehicles:add registry managed types admin role and demo banner-karm
 - Merge pull request #4 from karm-tech/feat/vehicles
@@ -31,14 +32,26 @@ that prevent bad dispatches and **auto-manage status** in real time.
 - [FEAT]vehicles:add registry crud with unique reg and filters-karm
 - Merge pull request #3 from karm-tech/feat/auth
 - [FEAT]auth:add jwt login rbac guards and one-click demo-karm
-- Merge pull request #2 from karm-tech/feat/backend
 <!-- STATUS:END -->
 
 ---
 
-## 🔗 Demo
+## 🔗 Demo & Login
 
-Click **"Open the demo"** on the login screen to sign in instantly with sample fleet data — no setup required.
+> ### ⚡ Fastest way in
+> On the login screen, click any **role button under "Open the demo"** to sign in instantly — no typing, sample data pre-loaded.
+
+**Or sign in with credentials — every account uses the password `demo1234`:**
+
+| Role | Email | Password |
+|------|-------|----------|
+| 🛡️ **Admin** — full access | **`admin@transitops.app`** | **`demo1234`** |
+| Fleet Manager | `manager@transitops.app` | `demo1234` |
+| Dispatcher | `dispatcher@transitops.app` | `demo1234` |
+| Safety Officer | `safety@transitops.app` | `demo1234` |
+| Financial Analyst | `finance@transitops.app` | `demo1234` |
+
+> 🔑 **To administer the system, log in as Admin** (`admin@transitops.app` / `demo1234`), then open **Users** to create accounts and assign roles. Roles are assigned only by an Admin — there is no public sign-up.
 
 ---
 
@@ -145,19 +158,7 @@ npm run setup    # installs API deps, creates the SQLite database, seeds demo da
 npm run dev      # runs the API (:4000) and web app (:5173) together
 ```
 
-Open **http://localhost:5173** and click **"Open the demo"**.
-
-### Demo accounts
-
-All accounts use the password `demo1234`.
-
-| Role | Email |
-|------|-------|
-| Admin | admin@transitops.app |
-| Fleet Manager | manager@transitops.app |
-| Dispatcher | dispatcher@transitops.app |
-| Safety Officer | safety@transitops.app |
-| Financial Analyst | finance@transitops.app |
+Open **http://localhost:5173** — see [**Demo & Login**](#-demo--login) above for one-click demo access or the account credentials.
 
 ## 📁 Project Structure
 
