@@ -2,12 +2,34 @@
   "name": "transitops-server",
   "private": true,
   "type": "module",
-  "version": "0.1.0",
-  "description": "TransitOps API (scaffolded — implemented in feat/backend)",
+  "version": "1.0.0",
+  "description": "TransitOps API — Express + Prisma + SQLite + Socket.io",
   "scripts": {
-    "dev": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "db:setup": "node -e \"process.exit(0)\"",
-    "seed": "node -e \"process.exit(0)\""
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:setup": "prisma generate && prisma migrate deploy && node prisma/seed.js",
+    "seed": "node prisma/seed.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15",
+    "socket.io": "^4.8.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "prisma": "^5.20.0"
   }
 }

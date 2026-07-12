@@ -1,0 +1,134 @@
+// SQLite has no native enums, so status/role fields are validated Strings.
+// Allowed values live in src/lib/constants.js and are enforced with Zod.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String
+  status       String   @default("Active")
+  createdAt    DateTime @default(now())
+}
+
+model Vehicle {
+  id              String            @id @default(cuid())
+  regNumber       String            @unique
+  name            String
+  type            String
+  maxLoadKg       Int
+  odometer        Int               @default(0)
+  acquisitionCost Float             @default(0)
+  region          String?
+  status          String            @default("Available")
+  createdAt       DateTime          @default(now())
+  trips           Trip[]
+  maintenance     Maintenance[]
+  fuelLogs        FuelLog[]
+  expenses        Expense[]
+  documents       VehicleDocument[]
+}
+
+model Driver {
+  id              String   @id @default(cuid())
+  name            String
+  licenseNumber   String   @unique
+  licenseCategory String
+  licenseExpiry   DateTime
+  contact         String?
+  safetyScore     Int      @default(100)
+  status          String   @default("Available")
+  createdAt       DateTime @default(now())
+  trips           Trip[]
+}
+
+model Trip {
+  id                String    @id @default(cuid())
+  code              String    @unique
+  source            String
+  destination       String
+  cargoWeightKg     Int
+  plannedDistanceKm Float
+  finalOdometer     Int?
+  fuelConsumed      Float?
+  revenue           Float?
+  status            String    @default("Draft")
+  dispatchedAt      DateTime?
+  completedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  vehicleId         String
+  driverId          String
+  vehicle           Vehicle   @relation(fields: [vehicleId], references: [id])
+  driver            Driver    @relation(fields: [driverId], references: [id])
+  expenses          Expense[]
+}
+
+model Maintenance {
+  id          String    @id @default(cuid())
+  type        String
+  description String?
+  cost        Float     @default(0)
+  status      String    @default("Active")
+  openedAt    DateTime  @default(now())
+  closedAt    DateTime?
+  vehicleId   String
+  vehicle     Vehicle   @relation(fields: [vehicleId], references: [id])
+}
+
+model FuelLog {
+  id        String   @id @default(cuid())
+  liters    Float
+  cost      Float
+  date      DateTime @default(now())
+  vehicleId String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  category  String
+  amount    Float
+  note      String?
+  date      DateTime @default(now())
+  vehicleId String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  tripId    String?
+  trip      Trip?    @relation(fields: [tripId], references: [id])
+}
+
+model VehicleDocument {
+  id         String   @id @default(cuid())
+  docType    String
+  fileName   String
+  filePath   String
+  uploadedAt DateTime @default(now())
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  meta      String?
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  id           Int    @id @default(1)
+  depotName    String @default("TransitOps Depot")
+  currency     String @default("INR")
+  distanceUnit String @default("km")
+  rbacMatrix   String @default("{}")
+}
