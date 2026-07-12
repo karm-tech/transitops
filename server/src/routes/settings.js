@@ -6,10 +6,10 @@ import { ROLES, DEFAULT_RBAC } from '../lib/constants.js'
 
 const router = Router()
 
-async function getSettings() {
-  let setting = await prisma.setting.findUnique({ where: { id: 1 } })
+async function getSettings(isDemo) {
+  let setting = await prisma.setting.findUnique({ where: { isDemo } })
   if (!setting) {
-    setting = await prisma.setting.create({ data: { id: 1, rbacMatrix: JSON.stringify(DEFAULT_RBAC) } })
+    setting = await prisma.setting.create({ data: { isDemo, rbacMatrix: JSON.stringify(DEFAULT_RBAC) } })
   }
   return setting
 }
@@ -23,9 +23,9 @@ const toDto = (s) => ({
 
 router.use(requireAuth)
 
-router.get('/', async (_req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
-    res.json(toDto(await getSettings()))
+    res.json(toDto(await getSettings(req.isDemo)))
   } catch (err) {
     next(err)
   }
@@ -40,8 +40,8 @@ const generalSchema = z.object({
 router.patch('/', requireRole(ROLES.ADMIN), async (req, res, next) => {
   try {
     const data = generalSchema.parse(req.body)
-    await getSettings()
-    const updated = await prisma.setting.update({ where: { id: 1 }, data })
+    const current = await getSettings(req.isDemo)
+    const updated = await prisma.setting.update({ where: { id: current.id }, data })
     res.json(toDto(updated))
   } catch (err) {
     next(err)
@@ -51,8 +51,8 @@ router.patch('/', requireRole(ROLES.ADMIN), async (req, res, next) => {
 router.patch('/rbac', requireRole(ROLES.ADMIN), async (req, res, next) => {
   try {
     const matrix = z.record(z.array(z.string())).parse(req.body.rbacMatrix)
-    await getSettings()
-    const updated = await prisma.setting.update({ where: { id: 1 }, data: { rbacMatrix: JSON.stringify(matrix) } })
+    const current = await getSettings(req.isDemo)
+    const updated = await prisma.setting.update({ where: { id: current.id }, data: { rbacMatrix: JSON.stringify(matrix) } })
     res.json(toDto(updated))
   } catch (err) {
     next(err)

@@ -20,7 +20,7 @@ router.post('/login', async (req, res, next) => {
     if (!user || !(await verifyPassword(password, user.passwordHash))) {
       throw new HttpError(401, 'Invalid email or password')
     }
-    res.json({ token: signToken(user), user: publicUser(user) })
+    res.json({ token: signToken(user, false), user: publicUser(user) })
   } catch (err) {
     next(err)
   }
@@ -42,7 +42,7 @@ router.post('/demo', async (req, res, next) => {
 
     const user = await prisma.user.findUnique({ where: { email } })
     if (!user) throw new HttpError(404, 'Demo account not seeded — run npm run seed')
-    res.json({ token: signToken(user), user: publicUser(user) })
+    res.json({ token: signToken(user, true), user: publicUser(user) })
   } catch (err) {
     next(err)
   }

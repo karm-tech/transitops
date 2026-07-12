@@ -44,8 +44,8 @@ const completeSchema = z.object({
 
 const canWrite = requireRole(ROLES.FLEET_MANAGER, ROLES.DISPATCHER)
 
-async function nextTripCode() {
-  const count = await prisma.trip.count()
+async function nextTripCode(isDemo) {
+  const count = await prisma.trip.count({ where: { isDemo } })
   return `TRIP-${String(count + 1).padStart(4, '0')}`
 }
 
@@ -55,7 +55,7 @@ router.get('/', async (req, res, next) => {
   try {
     const { status } = req.query
     const trips = await prisma.trip.findMany({
-      where: status ? { status } : {},
+      where: { isDemo: req.isDemo, ...(status ? { status } : {}) },
       orderBy: { createdAt: 'desc' },
       include: { vehicle: true, driver: true },
     })
@@ -66,11 +66,11 @@ router.get('/', async (req, res, next) => {
 })
 
 // Powers the dispatch form: every vehicle/driver annotated with eligibility + reason.
-router.get('/options', async (_req, res, next) => {
+router.get('/options', async (req, res, next) => {
   try {
     const [vehicles, drivers] = await Promise.all([
-      prisma.vehicle.findMany({ orderBy: { regNumber: 'asc' } }),
-      prisma.driver.findMany({ orderBy: { name: 'asc' } }),
+      prisma.vehicle.findMany({ where: { isDemo: req.isDemo }, orderBy: { regNumber: 'asc' } }),
+      prisma.driver.findMany({ where: { isDemo: req.isDemo }, orderBy: { name: 'asc' } }),
     ])
     res.json({
       vehicles: vehicles.map((v) => {
@@ -89,8 +89,8 @@ router.get('/options', async (_req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
   try {
-    const trip = await prisma.trip.findUnique({
-      where: { id: req.params.id },
+    const trip = await prisma.trip.findFirst({
+      where: { id: req.params.id, isDemo: req.isDemo },
       include: { vehicle: true, driver: true },
     })
     if (!trip) throw notFound('Trip not found')
@@ -104,8 +104,8 @@ router.post('/', canWrite, async (req, res, next) => {
   try {
     const data = createSchema.parse(req.body)
     const [vehicle, driver] = await Promise.all([
-      prisma.vehicle.findUnique({ where: { id: data.vehicleId } }),
-      prisma.driver.findUnique({ where: { id: data.driverId } }),
+      prisma.vehicle.findFirst({ where: { id: data.vehicleId, isDemo: req.isDemo } }),
+      prisma.driver.findFirst({ where: { id: data.driverId, isDemo: req.isDemo } }),
     ])
     if (!vehicle || !driver) throw notFound('Vehicle or driver not found')
 
@@ -114,9 +114,10 @@ router.post('/', canWrite, async (req, res, next) => {
       throw badRequest(`Cargo ${data.cargoWeightKg}kg exceeds ${vehicle.regNumber} capacity (${vehicle.maxLoadKg}kg)`)
     }
 
-    const code = await nextTripCode()
+    const code = await nextTripCode(req.isDemo)
     const base = {
       code,
+      isDemo: req.isDemo,
       source: data.source,
       destination: data.destination,
       cargoWeightKg: data.cargoWeightKg,
@@ -147,7 +148,7 @@ router.post('/', canWrite, async (req, res, next) => {
       prisma.driver.update({ where: { id: driver.id }, data: { status: 'OnTrip' } }),
     ])
     emitEvent('trips:changed', { id: trip.id })
-    await notify('trip', `${trip.code} dispatched: ${trip.source} → ${trip.destination}`)
+    await notify('trip', `${trip.code} dispatched: ${trip.source} → ${trip.destination}`, req.isDemo)
     res.status(201).json(trip)
   } catch (err) {
     next(err)
@@ -156,7 +157,7 @@ router.post('/', canWrite, async (req, res, next) => {
 
 router.post('/:id/dispatch', canWrite, async (req, res, next) => {
   try {
-    const trip = await prisma.trip.findUnique({ where: { id: req.params.id }, include: { vehicle: true, driver: true } })
+    const trip = await prisma.trip.findFirst({ where: { id: req.params.id, isDemo: req.isDemo }, include: { vehicle: true, driver: true } })
     if (!trip) throw notFound('Trip not found')
     if (trip.status !== 'Draft') throw badRequest('Only draft trips can be dispatched')
 
@@ -175,7 +176,7 @@ router.post('/:id/dispatch', canWrite, async (req, res, next) => {
       prisma.driver.update({ where: { id: trip.driverId }, data: { status: 'OnTrip' } }),
     ])
     emitEvent('trips:changed', { id: trip.id })
-    await notify('trip', `${trip.code} dispatched: ${trip.source} → ${trip.destination}`)
+    await notify('trip', `${trip.code} dispatched: ${trip.source} → ${trip.destination}`, req.isDemo)
     res.json({ ok: true })
   } catch (err) {
     next(err)
@@ -186,7 +187,7 @@ router.post('/:id/dispatch', canWrite, async (req, res, next) => {
 router.post('/:id/complete', canWrite, async (req, res, next) => {
   try {
     const data = completeSchema.parse(req.body)
-    const trip = await prisma.trip.findUnique({ where: { id: req.params.id } })
+    const trip = await prisma.trip.findFirst({ where: { id: req.params.id, isDemo: req.isDemo } })
     if (!trip) throw notFound('Trip not found')
     if (trip.status !== 'Dispatched') throw badRequest('Only dispatched trips can be completed')
 
@@ -200,7 +201,7 @@ router.post('/:id/complete', canWrite, async (req, res, next) => {
     ]
     await prisma.$transaction(ops)
     emitEvent('trips:changed', { id: trip.id })
-    await notify('trip', `${trip.code} completed`)
+    await notify('trip', `${trip.code} completed`, req.isDemo)
     res.json({ ok: true })
   } catch (err) {
     next(err)
@@ -210,7 +211,7 @@ router.post('/:id/complete', canWrite, async (req, res, next) => {
 // R8: cancelling a dispatched trip restores both to Available.
 router.post('/:id/cancel', canWrite, async (req, res, next) => {
   try {
-    const trip = await prisma.trip.findUnique({ where: { id: req.params.id } })
+    const trip = await prisma.trip.findFirst({ where: { id: req.params.id, isDemo: req.isDemo } })
     if (!trip) throw notFound('Trip not found')
     if (trip.status === 'Completed' || trip.status === 'Cancelled') {
       throw badRequest('This trip is already finished')

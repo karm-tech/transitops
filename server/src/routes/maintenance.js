@@ -24,7 +24,7 @@ router.get('/', async (req, res, next) => {
   try {
     const { status } = req.query
     const records = await prisma.maintenance.findMany({
-      where: status ? { status } : {},
+      where: { isDemo: req.isDemo, ...(status ? { status } : {}) },
       orderBy: { openedAt: 'desc' },
       include: { vehicle: true },
     })
@@ -38,17 +38,17 @@ router.get('/', async (req, res, next) => {
 router.post('/', canWrite, async (req, res, next) => {
   try {
     const data = createSchema.parse(req.body)
-    const vehicle = await prisma.vehicle.findUnique({ where: { id: data.vehicleId } })
+    const vehicle = await prisma.vehicle.findFirst({ where: { id: data.vehicleId, isDemo: req.isDemo } })
     if (!vehicle) throw notFound('Vehicle not found')
     if (vehicle.status === 'OnTrip') throw badRequest('This vehicle is on a trip — complete the trip first')
     if (vehicle.status === 'Retired') throw badRequest('Retired vehicles cannot be serviced')
 
     const [record] = await prisma.$transaction([
-      prisma.maintenance.create({ data: { ...data, status: 'Active' } }),
+      prisma.maintenance.create({ data: { ...data, status: 'Active', isDemo: req.isDemo } }),
       prisma.vehicle.update({ where: { id: vehicle.id }, data: { status: 'InShop' } }),
     ])
     emitEvent('maintenance:changed', { id: record.id })
-    await notify('maintenance', `${vehicle.regNumber} moved to In Shop — ${data.type}`)
+    await notify('maintenance', `${vehicle.regNumber} moved to In Shop — ${data.type}`, req.isDemo)
     res.status(201).json(record)
   } catch (err) {
     next(err)
@@ -58,7 +58,7 @@ router.post('/', canWrite, async (req, res, next) => {
 // R10: closing restores the vehicle to Available — unless it is Retired or still has other open work.
 router.post('/:id/close', canWrite, async (req, res, next) => {
   try {
-    const record = await prisma.maintenance.findUnique({ where: { id: req.params.id }, include: { vehicle: true } })
+    const record = await prisma.maintenance.findFirst({ where: { id: req.params.id, isDemo: req.isDemo }, include: { vehicle: true } })
     if (!record) throw notFound('Maintenance record not found')
     if (record.status === 'Closed') throw badRequest('This record is already closed')
 

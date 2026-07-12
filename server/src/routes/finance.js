@@ -27,9 +27,9 @@ const canWrite = requireRole(ROLES.FLEET_MANAGER, ROLES.FINANCIAL_ANALYST)
 
 router.use(requireAuth)
 
-router.get('/fuel', async (_req, res, next) => {
+router.get('/fuel', async (req, res, next) => {
   try {
-    const logs = await prisma.fuelLog.findMany({ orderBy: { date: 'desc' }, include: { vehicle: true } })
+    const logs = await prisma.fuelLog.findMany({ where: { isDemo: req.isDemo }, orderBy: { date: 'desc' }, include: { vehicle: true } })
     res.json(logs)
   } catch (err) {
     next(err)
@@ -39,9 +39,9 @@ router.get('/fuel', async (_req, res, next) => {
 router.post('/fuel', canWrite, async (req, res, next) => {
   try {
     const data = fuelSchema.parse(req.body)
-    const vehicle = await prisma.vehicle.findUnique({ where: { id: data.vehicleId } })
+    const vehicle = await prisma.vehicle.findFirst({ where: { id: data.vehicleId, isDemo: req.isDemo } })
     if (!vehicle) throw notFound('Vehicle not found')
-    const log = await prisma.fuelLog.create({ data })
+    const log = await prisma.fuelLog.create({ data: { ...data, isDemo: req.isDemo } })
     emitEvent('finance:changed', { id: log.id })
     res.status(201).json(log)
   } catch (err) {
@@ -49,9 +49,9 @@ router.post('/fuel', canWrite, async (req, res, next) => {
   }
 })
 
-router.get('/expenses', async (_req, res, next) => {
+router.get('/expenses', async (req, res, next) => {
   try {
-    const expenses = await prisma.expense.findMany({ orderBy: { date: 'desc' }, include: { vehicle: true } })
+    const expenses = await prisma.expense.findMany({ where: { isDemo: req.isDemo }, orderBy: { date: 'desc' }, include: { vehicle: true } })
     res.json(expenses)
   } catch (err) {
     next(err)
@@ -61,9 +61,9 @@ router.get('/expenses', async (_req, res, next) => {
 router.post('/expenses', canWrite, async (req, res, next) => {
   try {
     const data = expenseSchema.parse(req.body)
-    const vehicle = await prisma.vehicle.findUnique({ where: { id: data.vehicleId } })
+    const vehicle = await prisma.vehicle.findFirst({ where: { id: data.vehicleId, isDemo: req.isDemo } })
     if (!vehicle) throw notFound('Vehicle not found')
-    const expense = await prisma.expense.create({ data })
+    const expense = await prisma.expense.create({ data: { ...data, isDemo: req.isDemo } })
     emitEvent('finance:changed', { id: expense.id })
     res.status(201).json(expense)
   } catch (err) {
@@ -72,13 +72,14 @@ router.post('/expenses', canWrite, async (req, res, next) => {
 })
 
 // Operational cost per vehicle = Fuel + Maintenance (+ other expenses), computed on the fly.
-router.get('/summary', async (_req, res, next) => {
+router.get('/summary', async (req, res, next) => {
   try {
+    const scope = { where: { isDemo: req.isDemo } }
     const [vehicles, fuel, maintenance, expenses] = await Promise.all([
-      prisma.vehicle.findMany(),
-      prisma.fuelLog.groupBy({ by: ['vehicleId'], _sum: { cost: true } }),
-      prisma.maintenance.groupBy({ by: ['vehicleId'], _sum: { cost: true } }),
-      prisma.expense.groupBy({ by: ['vehicleId'], _sum: { amount: true } }),
+      prisma.vehicle.findMany(scope),
+      prisma.fuelLog.groupBy({ by: ['vehicleId'], _sum: { cost: true }, ...scope }),
+      prisma.maintenance.groupBy({ by: ['vehicleId'], _sum: { cost: true }, ...scope }),
+      prisma.expense.groupBy({ by: ['vehicleId'], _sum: { amount: true }, ...scope }),
     ])
 
     const sumBy = (rows, key) => Object.fromEntries(rows.map((r) => [r.vehicleId, r._sum[key] || 0]))

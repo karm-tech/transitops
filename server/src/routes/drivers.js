@@ -26,6 +26,7 @@ router.get('/', async (req, res, next) => {
   try {
     const { search, status, sort = 'createdAt' } = req.query
     const where = {
+      isDemo: req.isDemo,
       ...(status ? { status } : {}),
       ...(search
         ? { OR: [{ name: { contains: String(search) } }, { licenseNumber: { contains: String(search) } }] }
@@ -44,8 +45,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
   try {
-    const driver = await prisma.driver.findUnique({
-      where: { id: req.params.id },
+    const driver = await prisma.driver.findFirst({
+      where: { id: req.params.id, isDemo: req.isDemo },
       include: { trips: { orderBy: { createdAt: 'desc' }, take: 10, include: { vehicle: true } } },
     })
     if (!driver) throw notFound('Driver not found')
@@ -58,7 +59,7 @@ router.get('/:id', async (req, res, next) => {
 router.post('/', canWrite, async (req, res, next) => {
   try {
     const data = driverSchema.parse(req.body)
-    const driver = await prisma.driver.create({ data })
+    const driver = await prisma.driver.create({ data: { ...data, isDemo: req.isDemo } })
     emitEvent('drivers:changed', { id: driver.id })
     res.status(201).json(driver)
   } catch (err) {

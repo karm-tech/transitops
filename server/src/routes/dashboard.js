@@ -9,7 +9,9 @@ router.use(requireAuth)
 router.get('/', async (req, res, next) => {
   try {
     const { type, status, region } = req.query
+    const demo = req.isDemo
     const vehicleWhere = {
+      isDemo: demo,
       ...(type ? { type } : {}),
       ...(status ? { status } : {}),
       ...(region ? { region } : {}),
@@ -17,11 +19,11 @@ router.get('/', async (req, res, next) => {
 
     const [vehicles, dispatched, draft, driversOnDuty, recent, regions] = await Promise.all([
       prisma.vehicle.findMany({ where: vehicleWhere }),
-      prisma.trip.count({ where: { status: 'Dispatched' } }),
-      prisma.trip.count({ where: { status: 'Draft' } }),
-      prisma.driver.count({ where: { status: { in: ['Available', 'OnTrip'] } } }),
-      prisma.trip.findMany({ orderBy: { createdAt: 'desc' }, take: 5, include: { vehicle: true, driver: true } }),
-      prisma.vehicle.findMany({ distinct: ['region'], select: { region: true } }),
+      prisma.trip.count({ where: { isDemo: demo, status: 'Dispatched' } }),
+      prisma.trip.count({ where: { isDemo: demo, status: 'Draft' } }),
+      prisma.driver.count({ where: { isDemo: demo, status: { in: ['Available', 'OnTrip'] } } }),
+      prisma.trip.findMany({ where: { isDemo: demo }, orderBy: { createdAt: 'desc' }, take: 5, include: { vehicle: true, driver: true } }),
+      prisma.vehicle.findMany({ where: { isDemo: demo }, distinct: ['region'], select: { region: true } }),
     ])
 
     const countBy = (s) => vehicles.filter((v) => v.status === s).length

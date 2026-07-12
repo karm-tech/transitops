@@ -8,12 +8,13 @@ router.use(requireAuth)
 
 router.get('/', async (_req, res, next) => {
   try {
+    const demo = req.isDemo
     const [vehicles, trips, fuel, maintenance, expenses] = await Promise.all([
-      prisma.vehicle.findMany(),
-      prisma.trip.findMany({ where: { status: 'Completed' } }),
-      prisma.fuelLog.findMany(),
-      prisma.maintenance.findMany(),
-      prisma.expense.findMany(),
+      prisma.vehicle.findMany({ where: { isDemo: demo } }),
+      prisma.trip.findMany({ where: { isDemo: demo, status: 'Completed' } }),
+      prisma.fuelLog.findMany({ where: { isDemo: demo } }),
+      prisma.maintenance.findMany({ where: { isDemo: demo } }),
+      prisma.expense.findMany({ where: { isDemo: demo } }),
     ])
 
     const sumFor = (rows, id, field, key = 'vehicleId') =>

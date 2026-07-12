@@ -21,27 +21,30 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 12:58  •  **Commits:** 31
+> **Last updated:** 2026-07-12 13:42  •  **Commits:** 33
 
 **Recent activity**
+- Merge pull request #15 from karm-tech/feat/settings
+- [FEAT]settings:add settings rbac matrix mobile nav clean-seed and readme-karm
 - Merge pull request #14 from karm-tech/feat/reports
 - [FEAT]app:add reports exports detail-pages documents and notifications-karm
 - Merge pull request #13 from karm-tech/feat/dashboard
 - [FEAT]dashboard:wire live kpis charts and realtime updates-karm
 - Merge pull request #12 from karm-tech/feat/finance
 - [FEAT]finance:add fuel expense logs and auto operational cost-karm
-- Merge pull request #11 from karm-tech/feat/trip-details
-- [FEAT]trips:add full-page create detail and prev-next navigation-karm
 <!-- STATUS:END -->
 
 ---
 
 ## 🔗 Demo & Login
 
-> ### ⚡ Fastest way in
-> On the login screen, click any **role button under "Open the demo"** to sign in instantly — no typing, sample data pre-loaded.
+TransitOps has **two independent workspaces**, decided by *how* you sign in:
 
-**Or sign in with credentials — every account uses the password `demo1234`:**
+### 🚚 Demo workspace — click a role button
+On the login screen, click any **role button under "Open the demo"** to sign in instantly into a **pre-loaded sample fleet** (vehicles, drivers, trips, maintenance, expenses). Best for exploring every feature immediately.
+
+### 🆕 Fresh workspace — sign in with credentials
+Sign in with **email + password** and you get a **clean, empty system** to build from scratch — as if it were your own new deployment. Every account uses the password `demo1234`:
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -51,6 +54,8 @@ that prevent bad dispatches and **auto-manage status** in real time.
 | Safety Officer | `safety@transitops.app` | `demo1234` |
 | Financial Analyst | `finance@transitops.app` | `demo1234` |
 
+> The two workspaces are fully isolated — demo data never appears in the fresh workspace and vice-versa (scoped per session, one database).
+>
 > 🔑 **To administer the system, log in as Admin** (`admin@transitops.app` / `demo1234`), then open **Users** to create accounts and assign roles. Roles are assigned only by an Admin — there is no public sign-up.
 
 ---
