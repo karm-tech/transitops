@@ -6,7 +6,8 @@ import { useAuth } from '@/app/auth'
 import { apiError } from '@/lib/api'
 
 const demoRoles = [
-  { role: 'Fleet Manager', desc: 'Full fleet, maintenance & operations' },
+  { role: 'Admin', desc: 'Full access to everything' },
+  { role: 'Fleet Manager', desc: 'Fleet, maintenance & operations' },
   { role: 'Dispatcher', desc: 'Create & dispatch trips' },
   { role: 'Safety Officer', desc: 'Driver compliance & licenses' },
   { role: 'Financial Analyst', desc: 'Costs, fuel & profitability' },

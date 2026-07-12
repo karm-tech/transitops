@@ -59,9 +59,10 @@ export default function VehicleFormModal({ open, onClose, vehicle }) {
         </label>
         <label className="text-sm">
           Type
-          <select className="input mt-1" {...register('type')}>
-            {VEHICLE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
+          <input className="input mt-1" list="vehicle-types" placeholder="Van, Truck, or a new type…" {...register('type', { required: true })} />
+          <datalist id="vehicle-types">
+            {VEHICLE_TYPES.map((t) => <option key={t} value={t} />)}
+          </datalist>
         </label>
         <label className="text-sm">
           Max Load (kg)

@@ -11,7 +11,7 @@ import VehicleFormModal from './VehicleFormModal'
 
 export default function VehiclesPage() {
   const { user } = useAuth()
-  const canManage = user?.role === 'Fleet Manager'
+  const canManage = ['Admin', 'Fleet Manager'].includes(user?.role)
 
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
@@ -23,6 +23,8 @@ export default function VehiclesPage() {
   const params = { ...(search && { search }), ...(status && { status }), ...(type && { type }), sort }
   const { data: vehicles = [], isLoading } = useVehicles(params)
   const del = useDeleteVehicle()
+
+  const typeOptions = Array.from(new Set([...VEHICLE_TYPES, ...vehicles.map((v) => v.type)]))
 
   const openCreate = () => {
     setEditing(null)
@@ -62,7 +64,7 @@ export default function VehiclesPage() {
         </div>
         <select className="input w-auto" value={type} onChange={(e) => setType(e.target.value)}>
           <option value="">All Types</option>
-          {VEHICLE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+          {typeOptions.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
         <select className="input w-auto" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">All Status</option>

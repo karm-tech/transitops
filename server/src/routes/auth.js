@@ -53,6 +53,7 @@ router.post('/demo', async (req, res, next) => {
   try {
     const role = req.body?.role || ROLES.FLEET_MANAGER
     const emailByRole = {
+      [ROLES.ADMIN]: 'admin@transitops.app',
       [ROLES.FLEET_MANAGER]: 'manager@transitops.app',
       [ROLES.DISPATCHER]: 'dispatcher@transitops.app',
       [ROLES.SAFETY_OFFICER]: 'safety@transitops.app',

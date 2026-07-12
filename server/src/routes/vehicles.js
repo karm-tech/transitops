@@ -4,14 +4,15 @@ import { prisma } from '../lib/prisma.js'
 import { requireAuth, requireRole } from '../middleware/auth.js'
 import { conflict, notFound } from '../middleware/error.js'
 import { emitEvent } from '../lib/realtime.js'
-import { ROLES, VEHICLE_STATUS, VEHICLE_TYPES } from '../lib/constants.js'
+import { ROLES, VEHICLE_STATUS } from '../lib/constants.js'
 
 const router = Router()
 
+// Type is free-form (custom types allowed); statuses stay fixed as they drive the rules engine.
 const vehicleSchema = z.object({
   regNumber: z.string().min(3).transform((v) => v.trim().toUpperCase()),
   name: z.string().min(2),
-  type: z.enum(VEHICLE_TYPES),
+  type: z.string().min(2).transform((v) => v.trim()),
   maxLoadKg: z.coerce.number().int().positive(),
   odometer: z.coerce.number().int().nonnegative().default(0),
   acquisitionCost: z.coerce.number().nonnegative().default(0),

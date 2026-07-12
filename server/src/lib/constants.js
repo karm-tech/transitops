@@ -1,4 +1,5 @@
 export const ROLES = {
+  ADMIN: 'Admin',
   FLEET_MANAGER: 'Fleet Manager',
   DISPATCHER: 'Dispatcher',
   SAFETY_OFFICER: 'Safety Officer',
@@ -16,7 +17,9 @@ export const EXPENSE_CATEGORIES = ['Toll', 'Fuel', 'Maintenance', 'Other']
 export const DOCUMENT_TYPES = ['RC', 'Insurance', 'Permit', 'Other']
 
 // Default permission matrix surfaced on the Settings screen.
+// Admin implicitly has every permission (see requireRole middleware).
 export const DEFAULT_RBAC = {
+  Admin: ['dashboard', 'fleet', 'drivers', 'trips', 'maintenance', 'finance', 'reports', 'settings'],
   'Fleet Manager': ['fleet', 'drivers', 'trips', 'maintenance', 'finance', 'reports', 'settings'],
   Dispatcher: ['dashboard', 'trips', 'fleet'],
   'Safety Officer': ['drivers', 'maintenance'],

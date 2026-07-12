@@ -25,6 +25,7 @@ async function main() {
   const passwordHash = await bcrypt.hash('demo1234', 10)
   await prisma.user.createMany({
     data: [
+      { name: 'Admin', email: 'admin@transitops.app', passwordHash, role: ROLES.ADMIN },
       { name: 'Karm (Fleet Manager)', email: 'manager@transitops.app', passwordHash, role: ROLES.FLEET_MANAGER },
       { name: 'Ravi (Dispatcher)', email: 'dispatcher@transitops.app', passwordHash, role: ROLES.DISPATCHER },
       { name: 'Sana (Safety Officer)', email: 'safety@transitops.app', passwordHash, role: ROLES.SAFETY_OFFICER },
@@ -80,7 +81,7 @@ async function main() {
 
   await prisma.setting.create({ data: { id: 1, rbacMatrix: JSON.stringify(DEFAULT_RBAC) } })
 
-  console.log('Seed complete: 4 users, 5 vehicles, 5 drivers, 3 trips, 2 maintenance records.')
+  console.log('Seed complete: 5 users, 5 vehicles, 5 drivers, 3 trips, 2 maintenance records.')
 }
 
 main()
