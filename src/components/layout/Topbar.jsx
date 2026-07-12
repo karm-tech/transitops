@@ -37,7 +37,7 @@ export default function Topbar() {
         <button onClick={toggle} className="btn-ghost px-2.5" aria-label="Toggle theme">
           {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
         </button>
-        <button className="btn-primary" onClick={() => navigate('/trips?new=1')}>
+        <button className="btn-primary" onClick={() => navigate('/trips/new')}>
           <Plus size={16} />
           <span className="hidden sm:inline">Dispatch New</span>
         </button>

@@ -1,77 +1,56 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Loader2, AlertTriangle, Send, FileText } from 'lucide-react'
-import Modal from '@/components/ui/Modal'
+import { Loader2, AlertTriangle, Send, FileText, ArrowLeft } from 'lucide-react'
 import { apiError } from '@/lib/api'
 import { useCreateTrip, useTripOptions } from './api'
-
-const empty = { source: '', destination: '', vehicleId: '', driverId: '', cargoWeightKg: '', plannedDistanceKm: '' }
 
 function FieldError({ error }) {
   if (!error) return null
   return <p className="mt-1 text-xs text-rose-600">{error.message || 'This field is required'}</p>
 }
 
-export default function TripFormModal({ open, onClose }) {
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm({ defaultValues: empty })
-  const { data: options } = useTripOptions(open)
+export default function TripCreatePage() {
+  const navigate = useNavigate()
+  const { register, handleSubmit, watch, formState: { errors } } = useForm()
+  const { data: options } = useTripOptions()
   const create = useCreateTrip()
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    if (open) {
-      reset(empty)
-      setError('')
-    }
-  }, [open, reset])
-
   const vehicles = options?.vehicles || []
   const drivers = options?.drivers || []
-  const vehicleId = watch('vehicleId')
-  const driverId = watch('driverId')
+  const selectedVehicle = vehicles.find((v) => v.id === watch('vehicleId'))
+  const selectedDriver = drivers.find((d) => d.id === watch('driverId'))
   const cargo = Number(watch('cargoWeightKg')) || 0
-
-  const selectedVehicle = vehicles.find((v) => v.id === vehicleId)
-  const selectedDriver = drivers.find((d) => d.id === driverId)
   const overCapacity = selectedVehicle && cargo > selectedVehicle.maxLoadKg
-  const vehicleBlocked = selectedVehicle && !selectedVehicle.eligible
-  const driverBlocked = selectedDriver && !selectedDriver.eligible
-  const canDispatch = selectedVehicle && selectedDriver && !overCapacity && !vehicleBlocked && !driverBlocked
+  const canDispatch = selectedVehicle?.eligible && selectedDriver?.eligible && !overCapacity && cargo > 0
 
   const submit = (dispatch) =>
     handleSubmit(async (values) => {
       setError('')
       try {
-        await create.mutateAsync({ ...values, dispatch })
-        onClose()
+        const trip = await create.mutateAsync({ ...values, dispatch })
+        navigate(`/trips/${trip.id}`)
       } catch (err) {
         setError(apiError(err, 'Could not create trip'))
       }
     })
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="New Trip"
-      footer={
-        <>
-          <button className="btn-ghost" onClick={onClose} type="button">Cancel</button>
-          <button className="btn-ghost" onClick={submit(false)} disabled={create.isPending} type="button">
-            <FileText size={15} /> Save Draft
-          </button>
-          <button className="btn-primary" onClick={submit(true)} disabled={create.isPending || !canDispatch} type="button" title={!canDispatch ? 'Resolve the blocks below to dispatch' : ''}>
-            {create.isPending ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />} Dispatch
-          </button>
-        </>
-      }
-    >
+    <div className="mx-auto max-w-2xl">
+      <button onClick={() => navigate('/trips')} className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted hover:text-brand-600">
+        <ArrowLeft size={16} /> Trips
+      </button>
+      <h1 className="mb-1 text-2xl font-semibold">New Trip</h1>
+      <p className="mb-6 text-sm text-muted">Ineligible vehicles and drivers are disabled with the reason. Dispatch is blocked until every rule passes.</p>
+
       {error && (
         <div className="mb-4 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-sm text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300">
           {error}
         </div>
       )}
-      <form className="grid grid-cols-2 gap-4">
+
+      <form className="card grid grid-cols-2 gap-5 p-6">
         <label className="text-sm">
           Source <span className="text-rose-500">*</span>
           <input className="input mt-1" {...register('source', { required: 'Source is required', minLength: { value: 2, message: 'Enter a location' } })} />
@@ -125,7 +104,16 @@ export default function TripFormModal({ open, onClose }) {
             <span>Cargo exceeds {selectedVehicle.label.split(' · ')[0]} capacity by <b>{cargo - selectedVehicle.maxLoadKg}kg</b> — dispatch is blocked (max {selectedVehicle.maxLoadKg}kg).</span>
           </div>
         )}
+
+        <div className="col-span-2 flex justify-end gap-2 border-t pt-4" style={{ borderColor: 'rgb(var(--border))' }}>
+          <button className="btn-ghost" onClick={submit(false)} disabled={create.isPending} type="button">
+            <FileText size={15} /> Save Draft
+          </button>
+          <button className="btn-primary" onClick={submit(true)} disabled={create.isPending || !canDispatch} type="button" title={!canDispatch ? 'Resolve the blocks to dispatch' : ''}>
+            {create.isPending ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />} Dispatch
+          </button>
+        </div>
       </form>
-    </Modal>
+    </div>
   )
 }

@@ -15,6 +15,14 @@ export function useTrips(params) {
   })
 }
 
+export function useTrip(id) {
+  return useQuery({
+    queryKey: ['trips', id],
+    queryFn: async () => (await api.get(`/trips/${id}`)).data,
+    enabled: Boolean(id),
+  })
+}
+
 export function useTripOptions(enabled = true) {
   return useQuery({
     queryKey: ['trip-options'],

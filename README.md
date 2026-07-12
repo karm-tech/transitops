@@ -21,17 +21,17 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 11:23  •  **Commits:** 21
+> **Last updated:** 2026-07-12 11:44  •  **Commits:** 23
 
 **Recent activity**
+- Merge pull request #10 from karm-tech/feat/maintenance
+- [FEAT]maintenance:add service workflow with R9 R10 status sync-karm
 - Merge pull request #9 from karm-tech/feat/trips
 - [FEAT]trips:add dispatcher with rules R2-R8 and smart guard-karm
 - Merge pull request #8 from karm-tech/feat/drivers
 - [FEAT]drivers:add driver profiles license compliance and safety-karm
 - Merge pull request #7 from karm-tech/feat/users
 - [FEAT]users:add admin user management profile page and login docs-karm
-- Merge pull request #6 from karm-tech/feat/users
-- [FEAT]users:add admin user management and profile page-karm
 <!-- STATUS:END -->
 
 ---
