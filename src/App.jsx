@@ -2,8 +2,10 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from '@/components/layout/AppShell'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
 import LoginPage from '@/features/auth/LoginPage'
+import SignupPage from '@/features/auth/SignupPage'
 import DashboardPage from '@/features/dashboard/DashboardPage'
 import VehiclesPage from '@/features/vehicles/VehiclesPage'
+import VehicleFormPage from '@/features/vehicles/VehicleFormPage'
 import VehicleDetailPage from '@/features/vehicles/VehicleDetailPage'
 import DriversPage from '@/features/drivers/DriversPage'
 import DriverDetailPage from '@/features/drivers/DriverDetailPage'
@@ -13,6 +15,7 @@ import TripDetailPage from '@/features/trips/TripDetailPage'
 import MaintenancePage from '@/features/maintenance/MaintenancePage'
 import FinancePage from '@/features/finance/FinancePage'
 import ReportsPage from '@/features/reports/ReportsPage'
+import MailsPage from '@/features/mails/MailsPage'
 import SettingsPage from '@/features/settings/SettingsPage'
 import UsersPage from '@/features/users/UsersPage'
 import ProfilePage from '@/features/profile/ProfilePage'
@@ -21,6 +24,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
 
       <Route
         element={
@@ -32,6 +36,8 @@ export default function App() {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/fleet" element={<VehiclesPage />} />
+        <Route path="/fleet/new" element={<VehicleFormPage />} />
+        <Route path="/fleet/:id/edit" element={<VehicleFormPage />} />
         <Route path="/fleet/:id" element={<VehicleDetailPage />} />
         <Route path="/drivers" element={<DriversPage />} />
         <Route path="/drivers/:id" element={<DriverDetailPage />} />
@@ -41,6 +47,7 @@ export default function App() {
         <Route path="/maintenance" element={<MaintenancePage />} />
         <Route path="/finance" element={<FinancePage />} />
         <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/mails" element={<MailsPage />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />

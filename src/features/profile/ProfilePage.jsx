@@ -1,14 +1,21 @@
 import { useState } from 'react'
-import { Check, ShieldCheck, Bell } from 'lucide-react'
+import { Check, ShieldCheck, Bell, Loader2, Save } from 'lucide-react'
 import PageHeader from '@/components/common/PageHeader'
 import StatusBadge from '@/components/ui/StatusBadge'
 import { useAuth } from '@/app/auth'
-import { api } from '@/lib/api'
+import { api, apiError } from '@/lib/api'
 import { MODULES, accessFor, ROLE_DESCRIPTION } from '@/lib/rbac'
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuth()
   const [saving, setSaving] = useState(false)
+  const [details, setDetails] = useState({
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    phone: user?.phone || '',
+  })
+  const [detailsSaving, setDetailsSaving] = useState(false)
+  const [detailsMsg, setDetailsMsg] = useState('')
   if (!user) return null
 
   const toggleNotify = async () => {
@@ -18,6 +25,20 @@ export default function ProfilePage() {
       updateUser(data.user)
     } finally {
       setSaving(false)
+    }
+  }
+
+  const saveDetails = async () => {
+    setDetailsSaving(true)
+    setDetailsMsg('')
+    try {
+      const { data } = await api.patch('/auth/profile', details)
+      updateUser(data.user)
+      setDetailsMsg('Saved')
+    } catch (err) {
+      setDetailsMsg(apiError(err, 'Could not save'))
+    } finally {
+      setDetailsSaving(false)
     }
   }
 
@@ -42,6 +63,30 @@ export default function ProfilePage() {
             <ShieldCheck size={12} /> {user.role}
           </span>
         </div>
+      </div>
+
+      <div className="card mb-5 p-5">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-medium">Personal Details</h3>
+          {detailsMsg && <span className="text-xs text-muted">{detailsMsg}</span>}
+        </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <label className="text-sm">
+            First Name
+            <input className="input mt-1" value={details.firstName} onChange={(e) => setDetails({ ...details, firstName: e.target.value })} />
+          </label>
+          <label className="text-sm">
+            Last Name
+            <input className="input mt-1" value={details.lastName} onChange={(e) => setDetails({ ...details, lastName: e.target.value })} />
+          </label>
+          <label className="text-sm">
+            Phone
+            <input className="input mt-1" value={details.phone} onChange={(e) => setDetails({ ...details, phone: e.target.value })} />
+          </label>
+        </div>
+        <button className="btn-primary mt-4" onClick={saveDetails} disabled={detailsSaving}>
+          {detailsSaving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />} Save
+        </button>
       </div>
 
       <div className="card mb-5 flex items-center justify-between p-5">

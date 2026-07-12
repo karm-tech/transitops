@@ -6,7 +6,7 @@ const router = Router()
 
 router.use(requireAuth)
 
-router.get('/', async (_req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const demo = req.isDemo
     const [vehicles, trips, fuel, maintenance, expenses] = await Promise.all([

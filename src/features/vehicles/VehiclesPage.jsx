@@ -8,7 +8,6 @@ import { useAuth } from '@/app/auth'
 import { formatCurrency } from '@/lib/utils'
 import { VEHICLE_STATUS, labelFor } from '@/lib/constants'
 import { useVehicles, useDeleteVehicle, useVehicleTypes } from './api'
-import VehicleFormModal from './VehicleFormModal'
 import ManageTypesModal from './ManageTypesModal'
 
 export default function VehiclesPage() {
@@ -20,8 +19,6 @@ export default function VehiclesPage() {
   const [status, setStatus] = useState('')
   const [type, setType] = useState('')
   const [sort, setSort] = useState('createdAt')
-  const [editing, setEditing] = useState(null)
-  const [modalOpen, setModalOpen] = useState(false)
   const [typesOpen, setTypesOpen] = useState(false)
 
   const params = { ...(search && { search }), ...(status && { status }), ...(type && { type }), sort }
@@ -31,14 +28,6 @@ export default function VehiclesPage() {
 
   const typeOptions = types.map((t) => t.name)
 
-  const openCreate = () => {
-    setEditing(null)
-    setModalOpen(true)
-  }
-  const openEdit = (v) => {
-    setEditing(v)
-    setModalOpen(true)
-  }
   const onDelete = async (v) => {
     if (!window.confirm(`Delete ${v.regNumber}?`)) return
     try {
@@ -59,7 +48,7 @@ export default function VehiclesPage() {
               <button className="btn-ghost" onClick={() => setTypesOpen(true)}>
                 <Tag size={16} /> Manage Types
               </button>
-              <button className="btn-primary" onClick={openCreate}>
+              <button className="btn-primary" onClick={() => navigate('/fleet/new')}>
                 <Plus size={16} /> Add Vehicle
               </button>
             </div>
@@ -121,7 +110,7 @@ export default function VehiclesPage() {
                     {canManage && (
                       <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-end gap-1">
-                          <button className="btn-ghost px-2" onClick={() => openEdit(v)} aria-label="Edit"><Pencil size={14} /></button>
+                          <button className="btn-ghost px-2" onClick={() => navigate(`/fleet/${v.id}/edit`)} aria-label="Edit"><Pencil size={14} /></button>
                           <button className="btn-ghost px-2 text-rose-600" onClick={() => onDelete(v)} aria-label="Delete"><Trash2 size={14} /></button>
                         </div>
                       </td>
@@ -134,7 +123,6 @@ export default function VehiclesPage() {
         )}
       </div>
 
-      <VehicleFormModal open={modalOpen} onClose={() => setModalOpen(false)} vehicle={editing} />
       <ManageTypesModal open={typesOpen} onClose={() => setTypesOpen(false)} />
     </div>
   )

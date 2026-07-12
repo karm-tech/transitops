@@ -40,6 +40,11 @@ export function AuthProvider({ children }) {
     return persist(data)
   }
 
+  const register = async (payload) => {
+    const { data } = await api.post('/auth/register', payload)
+    return persist(data)
+  }
+
   const demoLogin = async (role) => {
     const { data } = await api.post('/auth/demo', { role })
     return persist(data, true)
@@ -54,7 +59,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, isDemo, login, demoLogin, logout, updateUser: setUser }}>
+    <AuthContext.Provider value={{ user, loading, isDemo, login, register, demoLogin, logout, updateUser: setUser }}>
       {children}
     </AuthContext.Provider>
   )

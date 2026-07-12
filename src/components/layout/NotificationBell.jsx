@@ -5,6 +5,13 @@ import { useNotifications, useMarkAllRead, useLicenseCheck } from '@/features/no
 
 const icons = { trip: Route, maintenance: Wrench, license: IdCard }
 
+const FILTERS = [
+  { key: 'all', label: 'All' },
+  { key: 'trip', label: 'Trips' },
+  { key: 'maintenance', label: 'Maintenance' },
+  { key: 'license', label: 'Licence' },
+]
+
 function timeAgo(date) {
   const mins = Math.round((Date.now() - new Date(date)) / 60000)
   if (mins < 1) return 'just now'
@@ -17,6 +24,7 @@ function timeAgo(date) {
 export default function NotificationBell() {
   const { user } = useAuth()
   const [open, setOpen] = useState(false)
+  const [filter, setFilter] = useState('all')
   const ref = useRef(null)
   const { data } = useNotifications()
   const markAll = useMarkAllRead()
@@ -30,7 +38,8 @@ export default function NotificationBell() {
 
   if (!user?.notifyEnabled) return null
 
-  const items = data?.items || []
+  const allItems = data?.items || []
+  const items = filter === 'all' ? allItems : allItems.filter((n) => n.type === filter)
   const unread = data?.unread || 0
   const canCheck = ['Admin', 'Fleet Manager', 'Safety Officer'].includes(user?.role)
 
@@ -52,6 +61,17 @@ export default function NotificationBell() {
             <button className="text-xs text-brand-600 hover:underline disabled:opacity-40" onClick={() => markAll.mutate()} disabled={!unread}>
               <CheckCheck size={12} className="mr-1 inline" /> Mark all read
             </button>
+          </div>
+          <div className="flex gap-1 border-b px-2 py-1.5" style={{ borderColor: 'rgb(var(--border))' }}>
+            {FILTERS.map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className={`rounded-md px-2 py-1 text-xs font-medium ${filter === f.key ? 'bg-brand-500/10 text-brand-600' : 'text-muted hover:bg-black/5 dark:hover:bg-white/5'}`}
+              >
+                {f.label}
+              </button>
+            ))}
           </div>
           <div className="max-h-80 overflow-y-auto">
             {items.length === 0 ? (
