@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Search, Moon, Sun, Plus, Truck, LogOut } from 'lucide-react'
 import { useTheme } from '@/app/theme'
 import { useAuth } from '@/app/auth'
@@ -42,7 +42,7 @@ export default function Topbar() {
           <span className="hidden sm:inline">Dispatch New</span>
         </button>
 
-        <div className="ml-1 hidden items-center gap-2 border-l pl-3 sm:flex" style={{ borderColor: 'rgb(var(--border))' }}>
+        <Link to="/profile" className="ml-1 hidden items-center gap-2 rounded-lg border-l pl-3 pr-1 hover:opacity-80 sm:flex" style={{ borderColor: 'rgb(var(--border))' }} title="View profile">
           <div className="grid h-8 w-8 place-items-center rounded-full bg-brand-500/15 text-xs font-semibold text-brand-600">
             {initials}
           </div>
@@ -50,7 +50,7 @@ export default function Topbar() {
             <p className="text-sm font-medium">{user?.name}</p>
             <p className="text-[11px] text-muted">{user?.role}</p>
           </div>
-        </div>
+        </Link>
         <button onClick={onLogout} className="btn-ghost px-2.5" aria-label="Sign out" title="Sign out">
           <LogOut size={16} />
         </button>

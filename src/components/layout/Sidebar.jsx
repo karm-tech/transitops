@@ -8,8 +8,10 @@ import {
   Fuel,
   BarChart3,
   Settings,
+  UserCog,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/app/auth'
 
 const nav = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -19,10 +21,14 @@ const nav = [
   { to: '/maintenance', label: 'Maintenance', icon: Wrench },
   { to: '/finance', label: 'Fuel & Expenses', icon: Fuel },
   { to: '/reports', label: 'Analytics', icon: BarChart3 },
+  { to: '/users', label: 'Users', icon: UserCog, adminOnly: true },
   { to: '/settings', label: 'Settings', icon: Settings },
 ]
 
 export default function Sidebar() {
+  const { user } = useAuth()
+  const items = nav.filter((item) => !item.adminOnly || user?.role === 'Admin')
+
   return (
     <aside className="surface hidden w-60 shrink-0 flex-col border-r md:flex">
       <div className="flex items-center gap-2 px-5 py-5">
@@ -35,7 +41,7 @@ export default function Sidebar() {
         </div>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-2">
-        {nav.map(({ to, label, icon: Icon }) => (
+        {items.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}

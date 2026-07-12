@@ -10,6 +10,7 @@ import { errorHandler } from './middleware/error.js'
 import authRoutes from './routes/auth.js'
 import vehicleRoutes from './routes/vehicles.js'
 import vehicleTypeRoutes from './routes/vehicleTypes.js'
+import userRoutes from './routes/users.js'
 
 const app = express()
 app.use(cors())
@@ -23,6 +24,7 @@ app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'transit
 app.use('/api/auth', authRoutes)
 app.use('/api/vehicles', vehicleRoutes)
 app.use('/api/vehicle-types', vehicleTypeRoutes)
+app.use('/api/users', userRoutes)
 
 app.get('/api/db/summary', async (_req, res, next) => {
   try {
