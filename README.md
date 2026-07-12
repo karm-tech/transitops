@@ -21,9 +21,10 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 16:45  •  **Commits:** 42
+> **Last updated:** 2026-07-12 16:53  •  **Commits:** 43
 
 **Recent activity**
+- [CHORE]cleanup:remove dead exports and internal mockup file-karm
 - [FEAT]trips:auto-log fuel on completion with per-trip price (default ₹100/L) + dashboard/odometer fixes-karm
 - Merge pull request #19 from karm-tech/feat/form-ux
 - [FEAT]ops:auto fuel logging + trip fuel price, landing page, dashboard & odometer fixes-karm
@@ -31,7 +32,6 @@ that prevent bad dispatches and **auto-manage status** in real time.
 - [FEAT]form-ux:add search signup docs sent-mails account-menu and name fields-karm
 - Merge pull request #17 from karm-tech/feat/form-ux
 - [IMPROV]forms:auto-save vehicle modal on outside click and clear validation messages-karm
-- Merge pull request #16 from karm-tech/feat/demo-isolation
 <!-- STATUS:END -->
 
 ---
@@ -75,6 +75,7 @@ Sign in with **email + password** and you get a **clean, empty system** to build
 ## ✨ Features
 
 - **Authentication & RBAC** — Email/password login with **public self-registration** (new users join as Dispatcher), JWT sessions, and role-based access (Admin, Fleet Manager, Dispatcher, Safety Officer, Financial Analyst) with route guards. Admin has full access.
+- **User Management** — Admin-only module to create user accounts, assign roles, and manage access.
 - **Dashboard** — Live KPIs (Active/Available Vehicles, In Maintenance, Active/Pending Trips, Drivers On Duty, Fleet Utilization %) with filters by vehicle type, status, and region.
 - **Vehicle Registry** — Master list of vehicles with a **unique** registration number, load capacity, odometer, acquisition cost, and lifecycle status.
 - **Driver Management** — Driver profiles with license number/category/expiry, safety score, and status — with compliance checks baked in.
@@ -85,7 +86,9 @@ Sign in with **email + password** and you get a **clean, empty system** to build
 - **Reports & Analytics** — Fuel efficiency, fleet utilization, operational cost, and Vehicle ROI, with **CSV and PDF export** and visual charts.
 - **Vehicle & Driver Documents** — Upload, view, download and manage documents (RC, insurance, permit, licence) per vehicle and driver.
 - **License Reminders** — Email reminders for drivers with expiring/expired licenses.
-- **Sent-Mail Outbox** — A **"Sent Mails"** log of every system email (welcome on registration, licence-expiry reminders), scoped per workspace.
+- **Sent-Mail Outbox** — A **"Sent Mails"** log of every system email (welcome on registration, licence-expiry reminders), scoped per workspace. Delivers via SMTP when configured, otherwise records to the outbox.
+- **In-app Notifications** — Live notification centre (trips, maintenance, licence alerts) with type filters and one-click "mark all read".
+- **Configurable Settings & RBAC** — Depot name, currency and distance unit, plus an editable **role-based access matrix** controlling which modules each role can reach.
 - **Real-time** — Live KPI/status updates across the app via Socket.io.
 - **Polish** — Light theme by default with **dark mode** toggle, a marketing landing page, global search, filters and sorting, and a consistent, responsive UI.
 
