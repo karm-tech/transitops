@@ -18,6 +18,7 @@ async function reset() {
   await prisma.activityLog.deleteMany()
   await prisma.setting.deleteMany()
   await prisma.vehicleType.deleteMany()
+  await prisma.notification.deleteMany()
 }
 
 async function main() {
@@ -85,6 +86,14 @@ async function main() {
   })
 
   await prisma.setting.create({ data: { id: 1, rbacMatrix: JSON.stringify(DEFAULT_RBAC) } })
+
+  await prisma.notification.createMany({
+    data: [
+      { type: 'trip', message: 'TRIP-0001 dispatched: Gandhinagar Depot → Ahmedabad Hub' },
+      { type: 'maintenance', message: 'GJ01-MIN-03 moved to In Shop — Oil Change' },
+      { type: 'license', message: "Meena's licence DL-3391 expires soon (20 days)", read: true },
+    ],
+  })
 
   console.log('Seed complete: 5 users, 5 vehicles, 5 drivers, 3 trips, 2 maintenance records.')
 }

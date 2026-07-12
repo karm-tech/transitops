@@ -21,17 +21,17 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 11:56  •  **Commits:** 27
+> **Last updated:** 2026-07-12 12:30  •  **Commits:** 29
 
 **Recent activity**
+- Merge pull request #13 from karm-tech/feat/dashboard
+- [FEAT]dashboard:wire live kpis charts and realtime updates-karm
 - Merge pull request #12 from karm-tech/feat/finance
 - [FEAT]finance:add fuel expense logs and auto operational cost-karm
 - Merge pull request #11 from karm-tech/feat/trip-details
 - [FEAT]trips:add full-page create detail and prev-next navigation-karm
 - Merge pull request #10 from karm-tech/feat/maintenance
 - [FEAT]maintenance:add service workflow with R9 R10 status sync-karm
-- Merge pull request #9 from karm-tech/feat/trips
-- [FEAT]trips:add dispatcher with rules R2-R8 and smart guard-karm
 <!-- STATUS:END -->
 
 ---

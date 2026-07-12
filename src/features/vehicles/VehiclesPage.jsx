@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Plus, Search, Pencil, Trash2, Loader2, Truck, Tag } from 'lucide-react'
 import PageHeader from '@/components/common/PageHeader'
 import EmptyState from '@/components/common/EmptyState'
@@ -12,6 +13,7 @@ import ManageTypesModal from './ManageTypesModal'
 
 export default function VehiclesPage() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const canManage = ['Admin', 'Fleet Manager'].includes(user?.role)
 
   const [search, setSearch] = useState('')
@@ -108,7 +110,7 @@ export default function VehiclesPage() {
               </thead>
               <tbody>
                 {vehicles.map((v) => (
-                  <tr key={v.id} className="border-b last:border-0 hover:bg-black/[0.02] dark:hover:bg-white/[0.03]" style={{ borderColor: 'rgb(var(--border))' }}>
+                  <tr key={v.id} onClick={() => navigate(`/fleet/${v.id}`)} className="cursor-pointer border-b last:border-0 hover:bg-black/[0.02] dark:hover:bg-white/[0.03]" style={{ borderColor: 'rgb(var(--border))' }}>
                     <td className="px-4 py-3 font-medium">{v.regNumber}</td>
                     <td className="px-4 py-3">{v.name}</td>
                     <td className="px-4 py-3">{v.type}</td>
@@ -117,7 +119,7 @@ export default function VehiclesPage() {
                     <td className="px-4 py-3 tabular-nums">{formatCurrency(v.acquisitionCost)}</td>
                     <td className="px-4 py-3"><StatusBadge status={v.status} /></td>
                     {canManage && (
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-end gap-1">
                           <button className="btn-ghost px-2" onClick={() => openEdit(v)} aria-label="Edit"><Pencil size={14} /></button>
                           <button className="btn-ghost px-2 text-rose-600" onClick={() => onDelete(v)} aria-label="Delete"><Trash2 size={14} /></button>

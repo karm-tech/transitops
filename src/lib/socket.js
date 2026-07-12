@@ -9,4 +9,5 @@ export const REALTIME_EVENTS = [
   'drivers:changed',
   'maintenance:changed',
   'finance:changed',
+  'notifications:new',
 ]

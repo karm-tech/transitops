@@ -4,6 +4,7 @@ import { prisma } from '../lib/prisma.js'
 import { requireAuth, requireRole } from '../middleware/auth.js'
 import { badRequest, conflict, notFound } from '../middleware/error.js'
 import { emitEvent } from '../lib/realtime.js'
+import { notify } from '../lib/notify.js'
 import { ROLES } from '../lib/constants.js'
 
 const router = Router()
@@ -146,6 +147,7 @@ router.post('/', canWrite, async (req, res, next) => {
       prisma.driver.update({ where: { id: driver.id }, data: { status: 'OnTrip' } }),
     ])
     emitEvent('trips:changed', { id: trip.id })
+    await notify('trip', `${trip.code} dispatched: ${trip.source} → ${trip.destination}`)
     res.status(201).json(trip)
   } catch (err) {
     next(err)
@@ -173,6 +175,7 @@ router.post('/:id/dispatch', canWrite, async (req, res, next) => {
       prisma.driver.update({ where: { id: trip.driverId }, data: { status: 'OnTrip' } }),
     ])
     emitEvent('trips:changed', { id: trip.id })
+    await notify('trip', `${trip.code} dispatched: ${trip.source} → ${trip.destination}`)
     res.json({ ok: true })
   } catch (err) {
     next(err)
@@ -197,6 +200,7 @@ router.post('/:id/complete', canWrite, async (req, res, next) => {
     ]
     await prisma.$transaction(ops)
     emitEvent('trips:changed', { id: trip.id })
+    await notify('trip', `${trip.code} completed`)
     res.json({ ok: true })
   } catch (err) {
     next(err)

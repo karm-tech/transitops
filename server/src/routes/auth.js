@@ -50,4 +50,14 @@ router.post('/demo', async (req, res, next) => {
 
 router.get('/me', requireAuth, (req, res) => res.json({ user: publicUser(req.user) }))
 
+router.patch('/preferences', requireAuth, async (req, res, next) => {
+  try {
+    const { notifyEnabled } = z.object({ notifyEnabled: z.boolean() }).parse(req.body)
+    const user = await prisma.user.update({ where: { id: req.user.id }, data: { notifyEnabled } })
+    res.json({ user: publicUser(user) })
+  } catch (err) {
+    next(err)
+  }
+})
+
 export default router

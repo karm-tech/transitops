@@ -2,6 +2,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { Search, Moon, Sun, Plus, Truck, LogOut } from 'lucide-react'
 import { useTheme } from '@/app/theme'
 import { useAuth } from '@/app/auth'
+import NotificationBell from './NotificationBell'
 
 export default function Topbar() {
   const { theme, toggle } = useTheme()
@@ -34,6 +35,7 @@ export default function Topbar() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
+        <NotificationBell />
         <button onClick={toggle} className="btn-ghost px-2.5" aria-label="Toggle theme">
           {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
         </button>

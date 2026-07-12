@@ -4,6 +4,7 @@ import { prisma } from '../lib/prisma.js'
 import { requireAuth, requireRole } from '../middleware/auth.js'
 import { badRequest, notFound } from '../middleware/error.js'
 import { emitEvent } from '../lib/realtime.js'
+import { notify } from '../lib/notify.js'
 import { ROLES } from '../lib/constants.js'
 
 const router = Router()
@@ -47,6 +48,7 @@ router.post('/', canWrite, async (req, res, next) => {
       prisma.vehicle.update({ where: { id: vehicle.id }, data: { status: 'InShop' } }),
     ])
     emitEvent('maintenance:changed', { id: record.id })
+    await notify('maintenance', `${vehicle.regNumber} moved to In Shop — ${data.type}`)
     res.status(201).json(record)
   } catch (err) {
     next(err)
