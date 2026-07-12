@@ -1,6 +1,7 @@
 import { verifyToken } from '../lib/auth.js'
 import { prisma } from '../lib/prisma.js'
 import { HttpError } from './error.js'
+import { ROLES } from '../lib/constants.js'
 
 export async function requireAuth(req, _res, next) {
   try {
@@ -21,6 +22,8 @@ export async function requireAuth(req, _res, next) {
 }
 
 export const requireRole = (...roles) => (req, _res, next) => {
+  // Admin bypasses every role check.
+  if (req.user?.role === ROLES.ADMIN) return next()
   if (!req.user || !roles.includes(req.user.role)) {
     return next(new HttpError(403, 'You do not have access to this action'))
   }

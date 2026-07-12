@@ -21,9 +21,12 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 10:06  •  **Commits:** 6
+> **Last updated:** 2026-07-12 10:28  •  **Commits:** 9
 
 **Recent activity**
+- [FEAT]vehicles:add registry crud with unique reg and filters-karm
+- Merge pull request #3 from karm-tech/feat/auth
+- [FEAT]auth:add jwt login rbac guards and one-click demo-karm
 - Merge pull request #2 from karm-tech/feat/backend
 - [FEAT]backend:add prisma schema seed express api and socket-karm
 - Merge pull request #1 from karm-tech/feat/scaffold
@@ -41,7 +44,7 @@ Click **"Open the demo"** on the login screen to sign in instantly with sample f
 
 ## ✨ Features
 
-- **Authentication & RBAC** — Email/password login, JWT sessions, and four role-based workspaces (Fleet Manager, Driver, Safety Officer, Financial Analyst) with route guards.
+- **Authentication & RBAC** — Email/password login, JWT sessions, and role-based access (Admin, Fleet Manager, Dispatcher, Safety Officer, Financial Analyst) with route guards. Admin has full access.
 - **Dashboard** — Live KPIs (Active/Available Vehicles, In Maintenance, Active/Pending Trips, Drivers On Duty, Fleet Utilization %) with filters by vehicle type, status, and region.
 - **Vehicle Registry** — Master list of vehicles with a **unique** registration number, load capacity, odometer, acquisition cost, and lifecycle status.
 - **Driver Management** — Driver profiles with license number/category/expiry, safety score, and status — with compliance checks baked in.
@@ -150,8 +153,9 @@ All accounts use the password `demo1234`.
 
 | Role | Email |
 |------|-------|
+| Admin | admin@transitops.app |
 | Fleet Manager | manager@transitops.app |
-| Driver | driver@transitops.app |
+| Dispatcher | dispatcher@transitops.app |
 | Safety Officer | safety@transitops.app |
 | Financial Analyst | finance@transitops.app |
 
