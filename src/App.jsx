@@ -5,6 +5,8 @@ import Placeholder from '@/components/common/Placeholder'
 import LoginPage from '@/features/auth/LoginPage'
 import DashboardPage from '@/features/dashboard/DashboardPage'
 import VehiclesPage from '@/features/vehicles/VehiclesPage'
+import UsersPage from '@/features/users/UsersPage'
+import ProfilePage from '@/features/profile/ProfilePage'
 
 export default function App() {
   return (
@@ -26,6 +28,8 @@ export default function App() {
         <Route path="/maintenance" element={<Placeholder title="Maintenance" />} />
         <Route path="/finance" element={<Placeholder title="Fuel & Expenses" />} />
         <Route path="/reports" element={<Placeholder title="Reports & Analytics" />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<Placeholder title="Settings & RBAC" />} />
       </Route>
 

@@ -12,6 +12,7 @@ export async function requireAuth(req, _res, next) {
     const payload = verifyToken(token)
     const user = await prisma.user.findUnique({ where: { id: payload.sub } })
     if (!user) throw new HttpError(401, 'Session no longer valid')
+    if (user.status === 'Inactive') throw new HttpError(403, 'This account has been deactivated')
 
     req.user = user
     next()
