@@ -29,8 +29,11 @@ async function main() {
       { name: 'Financial Analyst', email: 'finance@transitops.app', passwordHash, role: ROLES.FINANCIAL_ANALYST },
     ],
   })
-  await prisma.vehicleType.createMany({ data: ['Van', 'Truck', 'Mini', 'Bus', 'Tempo'].map((name) => ({ name })) })
-  await prisma.setting.create({ data: { id: 1, rbacMatrix: JSON.stringify(DEFAULT_RBAC) } })
+  await prisma.vehicleType.createMany({
+    data: ['Van', 'Truck', 'Mini', 'Bus', 'Tempo'].flatMap((name) => [{ name, isDemo: true }, { name, isDemo: false }]),
+  })
+  await prisma.setting.create({ data: { isDemo: true, rbacMatrix: JSON.stringify(DEFAULT_RBAC) } })
+  await prisma.setting.create({ data: { isDemo: false, rbacMatrix: JSON.stringify(DEFAULT_RBAC) } })
 
   console.log('Clean DB ready: 5 login accounts + vehicle types + settings. No operational data.')
 }

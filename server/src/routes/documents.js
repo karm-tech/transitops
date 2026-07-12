@@ -29,11 +29,11 @@ router.post('/', canManage, upload.single('file'), async (req, res, next) => {
       .object({ vehicleId: z.string().min(1), docType: z.enum(DOCUMENT_TYPES) })
       .parse(req.body)
 
-    const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } })
+    const vehicle = await prisma.vehicle.findFirst({ where: { id: vehicleId, isDemo: req.isDemo } })
     if (!vehicle) throw notFound('Vehicle not found')
 
     const doc = await prisma.vehicleDocument.create({
-      data: { vehicleId, docType, fileName: req.file.originalname, filePath: `/${uploadDir}/${req.file.filename}` },
+      data: { vehicleId, docType, fileName: req.file.originalname, filePath: `/${uploadDir}/${req.file.filename}`, isDemo: req.isDemo },
     })
     res.status(201).json(doc)
   } catch (err) {

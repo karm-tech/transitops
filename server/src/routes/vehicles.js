@@ -26,6 +26,7 @@ router.get('/', async (req, res, next) => {
   try {
     const { search, status, type, sort = 'createdAt' } = req.query
     const where = {
+      isDemo: req.isDemo,
       ...(status ? { status } : {}),
       ...(type ? { type } : {}),
       ...(search
@@ -50,8 +51,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
   try {
-    const vehicle = await prisma.vehicle.findUnique({
-      where: { id: req.params.id },
+    const vehicle = await prisma.vehicle.findFirst({
+      where: { id: req.params.id, isDemo: req.isDemo },
       include: {
         trips: { orderBy: { createdAt: 'desc' }, take: 10, include: { driver: true } },
         maintenance: { orderBy: { openedAt: 'desc' }, take: 10 },
@@ -68,7 +69,7 @@ router.get('/:id', async (req, res, next) => {
 router.post('/', requireRole(ROLES.FLEET_MANAGER), async (req, res, next) => {
   try {
     const data = vehicleSchema.parse(req.body)
-    const vehicle = await prisma.vehicle.create({ data })
+    const vehicle = await prisma.vehicle.create({ data: { ...data, isDemo: req.isDemo } })
     emitEvent('vehicles:changed', { id: vehicle.id })
     res.status(201).json(vehicle)
   } catch (err) {

@@ -7,8 +7,8 @@ const EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'
 export const hashPassword = (plain) => bcrypt.hash(plain, 10)
 export const verifyPassword = (plain, hash) => bcrypt.compare(plain, hash)
 
-export const signToken = (user) =>
-  jwt.sign({ sub: user.id, role: user.role }, SECRET, { expiresIn: EXPIRES_IN })
+export const signToken = (user, isDemo = false) =>
+  jwt.sign({ sub: user.id, role: user.role, isDemo }, SECRET, { expiresIn: EXPIRES_IN })
 
 export const verifyToken = (token) => jwt.verify(token, SECRET)
 

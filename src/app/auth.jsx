@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { api, TOKEN_KEY } from '@/lib/api'
 
 const AuthContext = createContext(null)
 const DEMO_KEY = 'transitops_demo'
 
 export function AuthProvider({ children }) {
+  const qc = useQueryClient()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isDemo, setIsDemo] = useState(localStorage.getItem(DEMO_KEY) === '1')
@@ -23,6 +25,8 @@ export function AuthProvider({ children }) {
   }, [])
 
   const persist = ({ token, user }, demo = false) => {
+    // Drop the previous session's cached data so workspaces never bleed across logins.
+    qc.clear()
     localStorage.setItem(TOKEN_KEY, token)
     if (demo) localStorage.setItem(DEMO_KEY, '1')
     else localStorage.removeItem(DEMO_KEY)
@@ -42,6 +46,7 @@ export function AuthProvider({ children }) {
   }
 
   const logout = () => {
+    qc.clear()
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(DEMO_KEY)
     setIsDemo(false)

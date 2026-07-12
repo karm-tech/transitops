@@ -26,12 +26,13 @@ model Notification {
   type      String
   message   String
   read      Boolean  @default(false)
+  isDemo    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
 model Vehicle {
   id              String            @id @default(cuid())
-  regNumber       String            @unique
+  regNumber       String
   name            String
   type            String
   maxLoadKg       Int
@@ -39,30 +40,36 @@ model Vehicle {
   acquisitionCost Float             @default(0)
   region          String?
   status          String            @default("Available")
+  isDemo          Boolean           @default(false)
   createdAt       DateTime          @default(now())
   trips           Trip[]
   maintenance     Maintenance[]
   fuelLogs        FuelLog[]
   expenses        Expense[]
   documents       VehicleDocument[]
+
+  @@unique([regNumber, isDemo])
 }
 
 model Driver {
   id              String   @id @default(cuid())
   name            String
-  licenseNumber   String   @unique
+  licenseNumber   String
   licenseCategory String
   licenseExpiry   DateTime
   contact         String?
   safetyScore     Int      @default(100)
   status          String   @default("Available")
+  isDemo          Boolean  @default(false)
   createdAt       DateTime @default(now())
   trips           Trip[]
+
+  @@unique([licenseNumber, isDemo])
 }
 
 model Trip {
   id                String    @id @default(cuid())
-  code              String    @unique
+  code              String
   source            String
   destination       String
   cargoWeightKg     Int
@@ -73,12 +80,15 @@ model Trip {
   status            String    @default("Draft")
   dispatchedAt      DateTime?
   completedAt       DateTime?
+  isDemo            Boolean   @default(false)
   createdAt         DateTime  @default(now())
   vehicleId         String
   driverId          String
   vehicle           Vehicle   @relation(fields: [vehicleId], references: [id])
   driver            Driver    @relation(fields: [driverId], references: [id])
   expenses          Expense[]
+
+  @@unique([code, isDemo])
 }
 
 model Maintenance {
@@ -87,6 +97,7 @@ model Maintenance {
   description String?
   cost        Float     @default(0)
   status      String    @default("Active")
+  isDemo      Boolean   @default(false)
   openedAt    DateTime  @default(now())
   closedAt    DateTime?
   vehicleId   String
@@ -97,6 +108,7 @@ model FuelLog {
   id        String   @id @default(cuid())
   liters    Float
   cost      Float
+  isDemo    Boolean  @default(false)
   date      DateTime @default(now())
   vehicleId String
   vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
@@ -107,6 +119,7 @@ model Expense {
   category  String
   amount    Float
   note      String?
+  isDemo    Boolean  @default(false)
   date      DateTime @default(now())
   vehicleId String
   vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
@@ -119,6 +132,7 @@ model VehicleDocument {
   docType    String
   fileName   String
   filePath   String
+  isDemo     Boolean  @default(false)
   uploadedAt DateTime @default(now())
   vehicleId  String
   vehicle    Vehicle  @relation(fields: [vehicleId], references: [id])
@@ -135,15 +149,19 @@ model ActivityLog {
 }
 
 model Setting {
-  id           Int    @id @default(1)
-  depotName    String @default("TransitOps Depot")
-  currency     String @default("INR")
-  distanceUnit String @default("km")
-  rbacMatrix   String @default("{}")
+  id           Int     @id @default(autoincrement())
+  isDemo       Boolean @unique @default(false)
+  depotName    String  @default("TransitOps Depot")
+  currency     String  @default("INR")
+  distanceUnit String  @default("km")
+  rbacMatrix   String  @default("{}")
 }
 
 model VehicleType {
   id        String   @id @default(cuid())
-  name      String   @unique
+  name      String
+  isDemo    Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@unique([name, isDemo])
 }

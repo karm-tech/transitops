@@ -15,6 +15,8 @@ export async function requireAuth(req, _res, next) {
     if (user.status === 'Inactive') throw new HttpError(403, 'This account has been deactivated')
 
     req.user = user
+    // Demo sessions see demo data; credential sessions see real (empty) data.
+    req.isDemo = Boolean(payload.isDemo)
     next()
   } catch (err) {
     if (err instanceof HttpError) return next(err)
