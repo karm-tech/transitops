@@ -4,6 +4,7 @@ import ProtectedRoute from '@/components/common/ProtectedRoute'
 import Placeholder from '@/components/common/Placeholder'
 import LoginPage from '@/features/auth/LoginPage'
 import DashboardPage from '@/features/dashboard/DashboardPage'
+import VehiclesPage from '@/features/vehicles/VehiclesPage'
 
 export default function App() {
   return (
@@ -19,7 +20,7 @@ export default function App() {
       >
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/fleet" element={<Placeholder title="Vehicle Registry" />} />
+        <Route path="/fleet" element={<VehiclesPage />} />
         <Route path="/drivers" element={<Placeholder title="Drivers & Safety" />} />
         <Route path="/trips" element={<Placeholder title="Trip Dispatcher" />} />
         <Route path="/maintenance" element={<Placeholder title="Maintenance" />} />

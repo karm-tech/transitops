@@ -21,9 +21,11 @@ that prevent bad dispatches and **auto-manage status** in real time.
 ## 📈 Project Status
 
 <!-- STATUS:START -->
-> **Last updated:** 2026-07-12 10:06  •  **Commits:** 6
+> **Last updated:** 2026-07-12 10:17  •  **Commits:** 8
 
 **Recent activity**
+- Merge pull request #3 from karm-tech/feat/auth
+- [FEAT]auth:add jwt login rbac guards and one-click demo-karm
 - Merge pull request #2 from karm-tech/feat/backend
 - [FEAT]backend:add prisma schema seed express api and socket-karm
 - Merge pull request #1 from karm-tech/feat/scaffold
