@@ -12,6 +12,7 @@ import vehicleRoutes from './routes/vehicles.js'
 import vehicleTypeRoutes from './routes/vehicleTypes.js'
 import userRoutes from './routes/users.js'
 import driverRoutes from './routes/drivers.js'
+import tripRoutes from './routes/trips.js'
 
 const app = express()
 app.use(cors())
@@ -27,6 +28,7 @@ app.use('/api/vehicles', vehicleRoutes)
 app.use('/api/vehicle-types', vehicleTypeRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/drivers', driverRoutes)
+app.use('/api/trips', tripRoutes)
 
 app.get('/api/db/summary', async (_req, res, next) => {
   try {
