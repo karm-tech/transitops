@@ -1,0 +1,13 @@
+{
+  "name": "transitops-server",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "TransitOps API (scaffolded — implemented in feat/backend)",
+  "scripts": {
+    "dev": "node src/index.js",
+    "start": "node src/index.js",
+    "db:setup": "node -e \"process.exit(0)\"",
+    "seed": "node -e \"process.exit(0)\""
+  }
+}
